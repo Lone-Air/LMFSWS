@@ -60,7 +60,8 @@ double execext(int argc, char* argv[]){
     int count=0;
     char** arg=(char**)malloc(((argc+1)*sizeof(char*)));
     for(int i=1;i<argc;i++){
-        arg[count]=(char*)calloc(0, strlen(argv[i])+1);
+        arg[count]=(char*)malloc(strlen(argv[i])+2);
+        memset(arg[count], 0, strlen(argv[i])+2);
         strcpy(arg[count++], argv[i]);
     }
     new.argc=argc-1;

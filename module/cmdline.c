@@ -15,26 +15,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SAVETO(a, counter, c) a=(char*)realloc(a, strlen(a)+1); \
+#define SAVETO(a, counter, c) a=(char*)realloc(a, strlen(a)+2); \
                               a[counter++]=c;\
 
 extern Array* parse(const char* s){
     size_t len=0;
-    char** data=(char**)malloc(sizeof(char*)*1);
+    char** data=(char**)malloc(sizeof(char*)*2);
     int count=0;
     int ch;
     int str;
     int c;
-    char* buf=(char*)calloc(0, 2);
-    data[len]=(char*)calloc(0, 2);
+    char* buf=(char*)malloc(2);
+    data[len]=(char*)malloc(2);
+    memset(buf, 0, 2);
+    memset(data[len], 0, 2);
     while((ch=*(s++))!='\0'){
         if(ch==' '||ch=='\t'){
             if(strcmp(buf, "")!=0){
-                data[len]=(char*)calloc(0, count+1);
+                data[len]=(char*)malloc(count+2);
+                memset(data[len], 0, count+2);
                 strncpy(data[len], buf, count);
                 data=(char**)realloc(data, (len+2)*sizeof(char*));
-                data[++len]=(char*)calloc(0, 2);
-                buf=(char*)calloc(0, 2);
+                data[++len]=(char*)malloc(2);
+                strcpy(data[len], "");
+                buf=(char*)malloc(2);
+                strcpy(buf, "");
                 count=0;
             }
             continue;
@@ -112,18 +117,22 @@ extern Array* parse(const char* s){
         }
     }
     if(strcmp(buf, "")!=0){
-        data[len]=(char*)calloc(0, count+1);
-        strncpy(data[len], buf, count);
+        /*data[len]=(char*)calloc(0, count+2);
+        strcpy(data[len], buf);*/
+        data[len]=buf;
     }
     Array result[1];
-    char** new=(char**)malloc(sizeof(char*)*1);
+    char** new=(char**)malloc(sizeof(char*)*2);
     long int newlen=0;
     for(int i=0;i<=len;i++){
         if(strcmp(data[i], "")!=0||i==0){
-            new=(char**)realloc(new, sizeof(char*)*(newlen+1));
-            new[newlen]=(char*)calloc(0, strlen(data[i])+1);
+            new=(char**)realloc(new, sizeof(char*)*(newlen+2));
+            new[newlen]=(char*)malloc(strlen(data[i])+2);
+            memset(new[newlen], 0, strlen(data[i])+1);
             strcpy(new[newlen++], data[i]);
         }
+        if(i!=len)
+          free(data[i]);
     }
     result[0]=(Array){new, newlen+1};
     Array* res=result;
@@ -143,3 +152,13 @@ FuncList Regist[]={
       {"parse", 2, NF, (void*)parse},
       {NULL, -1, NF, NULL}
 };
+
+/*
+int main(){
+#include <readline/readline.h>
+    while(1){
+        char* s=readline("> ");
+        Array arr=parse(s)[0];
+    }
+}
+*/

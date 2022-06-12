@@ -27,6 +27,7 @@ function _help(){
        -main       Enable main part
        -module     Enable modules part
        -install    Enable automatic install
+       -debug      Append '-ggdb3' to \$CFLAGS
        -version    Show version of the cloned LMFSWS source
        -help       Show this message
     "
@@ -51,10 +52,12 @@ function _start(){
             install=yes
         elif [ "$i" = "-main" ]; then
             main=yes
-        elif [ "$i" = "-modules" ]; then
+        elif [ "$i" = "-module" ]; then
             module=yes
         elif [ "$i" = "-install" ]; then
             install=yes
+        elif [ "$i" = "-debug" ]; then
+            CFLAGS="$CFLAGS -ggdb3"
         elif [ "$i" = "-version" ]; then
             cat VERSION
         elif [ "$i" = "-help" ]; then

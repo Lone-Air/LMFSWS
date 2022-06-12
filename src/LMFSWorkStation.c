@@ -109,7 +109,8 @@ int main(){
             int _count=1;
             newargv[0]="execext";
             for(int i=0;i<Arg.argc;i++){
-                newargv[_count]=(char*)calloc(0, strlen(Arg.argv[i]));
+                newargv[_count]=(char*)malloc(strlen(Arg.argv[i])+2);
+                memset(newargv[_count], 0, strlen(Arg.argv[i])+2);
                 strcpy(newargv[_count++], Arg.argv[i]);
             }
             ArgList newarg={_count, newargv};
