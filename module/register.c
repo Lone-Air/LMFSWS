@@ -16,20 +16,43 @@
 #include <stdlib.h>
 #include <string.h>
 
-int mod_init(){
-    if(InitModulePool()!=1) return -1;
-    if(InitFuncPool()!=0){
-        CloseModules();
-        return 1;
-    }
-    return 0;
-}
 
 int mod_helper(){
     printf("LMFS WorkStation 2022 - Work ToolBox - Core Command\n");
     printf("    include <modules...>\n");
     printf("    regist <modules...>\n");
+    printf("    import <modules...>\n");
+    printf("    printloaded\n");
+    printf("    execext <command> [args...]");
+    printf("    exthelp <modules...>\n");
     printf("LMFSWorkStation Built-in Command.\n");
+}
+
+double exthelp(int argc, char* argv[]){
+    if(argc<2){
+        printf("LMFS WorkStation 2022 - Work ToolBox - Core Command\n");
+        printf("    exthelp <modules...>\n");
+        printf("LMFSWorkStation Built-in Command.\n");
+    }else{
+        for(int i=1;i<argc;i++){
+            if(strcmp(argv[i], "help")==0){
+                printf("LMFS WorkStation 2022 - Work ToolBox - Core Command\n");
+                printf("    exthelp <modules...>\n");
+                printf("LMFSWorkStation Builtin.\n");
+                continue;
+            }
+            int index=FindModule(argv[i]);
+            if(i==-1) continue;
+            _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
+            char* err=dlerror();
+            if(err!=NULL){
+                fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\n", err);
+                continue;
+            }
+            helper();
+        }
+    }
+    return 0;
 }
 
 double execext(int argc, char* argv[]){
@@ -71,6 +94,15 @@ double _regist(int argc, char* argv[]){
     return 0;
 }
 
+double import(int argc, char* argv[]){
+    for(int i=1;i<argc;i++){
+        if(LoadModule(argv[i])!=-1){
+            regist(argv[i]);
+        }
+    }
+    return 0;
+}
+
 double printloaded(){
     for(int i=0;i<ModuleNum;i++){
         printf("%s\n", Modules[i].ModuleName);
@@ -78,6 +110,15 @@ double printloaded(){
     return 0;
 }
 
+int mod_init(){
+    if(InitModulePool()!=1) return -1;
+    if(InitFuncPool()!=0){
+        CloseModules();
+        return 1;
+    }
+    return 0;
+
+}
 double NF(){ return -1; }
 
 FuncList Regist[]={
@@ -85,6 +126,8 @@ FuncList Regist[]={
       {"regist", 1, _regist, NULL},
       {"printloaded", 1, printloaded, NULL},
       {"execext", 1, execext, NULL},
+      {"exthelp", 1, exthelp, NULL},
+      {"import", 1, import, NULL},
       {NULL, -1, NF, NULL}
 };
 

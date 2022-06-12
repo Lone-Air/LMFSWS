@@ -89,18 +89,33 @@ int main(){
                 continue;
             }
         }
-        type=getType(Arg.argv[0]);
-        double result;
-        if(type!=-1){
-            if(type==1){
-              result=GetFunc(Arg.argv[0]).Func(Arg);
-              if((int)result!=0){
-                  printf("Result=%lf\n", result);
-              }
+        int FuncIndex=FindFunc(Arg.argv[0]);
+        if(FuncIndex!=-1){
+            type=Func[FuncIndex].type;
+            double result;
+            if(type!=-1){
+                if(type==1){
+                  result=GetFunc(Arg.argv[0]).Func(Arg);
+                  if((int)result!=0){
+                      printf("Result=%lf\n", result);
+                  }
+                }
+                else if(type==2){
+                    GetFunc(Arg.argv[0]).PtrFunc(Arg);
+                }
             }
-            else if(type==2){
-                GetFunc(Arg.argv[0]).PtrFunc(Arg);
+        }else{
+            char** newargv=(char**)malloc((Arg.argc+2)*sizeof(char*));
+            int _count=1;
+            newargv[0]="execext";
+            for(int i=0;i<Arg.argc;i++){
+                newargv[_count]=(char*)calloc(0, strlen(Arg.argv[i]));
+                strcpy(newargv[_count++], Arg.argv[i]);
             }
+            ArgList newarg={_count, newargv};
+            GetFunc("execext").Func(newarg);
+            for(int i=1;i<_count;i++)
+              free(newargv[i]);
         }
     }
     CloseModules();
