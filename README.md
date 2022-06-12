@@ -56,10 +56,11 @@ FuncList Regist[]={
         LAZY
     Write "LAZY" to tell LMFSWS module-loader use RTLD_LAZY Mode in LIBDL
 4. In the end. Compile XXX.c to XXX.so and put XXX.mode to the same as directory of XXX.so
-        Start "LMFSWS" and ```
-        include XXX // This is the name of your module
-        regist XXX // Call Register to regist the function in Regist of XXX
-        execext <Function> // The Function of XXX was loaded
-        ```
+   Start "LMFSWS" and
+```
+include XXX // This is the name of your module
+regist XXX // Call Register to regist the function in Regist of XXX
+execext <Function> // The Function of XXX was loaded
+```
 
 ## Thanks for using!
