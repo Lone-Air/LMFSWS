@@ -133,7 +133,7 @@ extern Array* parse(const char* s){
 int mod_init(){ return 0; }
 int mod_helper(){
     printf("LMFS WorkStation 2022 - Work ToolBox\n");
-    printf("    parse <string>");
+    printf("    parse <string>\n");
     printf("LMFSWorkStation Built-in. Don't Use it in a script!\n");
 }
 
