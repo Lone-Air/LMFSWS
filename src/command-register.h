@@ -1,0 +1,1 @@
+../include/command-register.h
