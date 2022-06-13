@@ -55,7 +55,7 @@ int main(){
     PtrFunction input=GetFunc("input").PtrFunc;
     PtrFunction parse=GetFunc("parse").PtrFunc;
     while(1){
-        char* data=input("LMFSWorkStation> ");
+        const char* data=input("LMFSWorkStation> ");
         if(data==NULL) break;
         Args=parse(data);
         if(Args[0].length<1||strcmp(Args[0].data[0], "")==0) continue;

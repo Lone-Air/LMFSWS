@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SAVETO(a, counter, c) a=(char*)realloc(a, strlen(a)+2); \
+#define SAVETO(a, counter, c) a=(char*)realloc(a, counter+2); \
                               a[counter++]=c;\
 
 extern Array* parse(const char* s){
@@ -32,14 +32,16 @@ extern Array* parse(const char* s){
     while((ch=*(s++))!='\0'){
         if(ch==' '||ch=='\t'){
             if(strcmp(buf, "")!=0){
-                data[len]=(char*)malloc(count+2);
-                memset(data[len], 0, count+2);
+                data[len]=(char*)calloc(0, count+2);
+                //memset(data[len], 0, count+2);
                 strncpy(data[len], buf, count);
-                data=(char**)realloc(data, (len+2)*sizeof(char*));
+                //strcpy(data[len], buf);
+                data=(char**)realloc(data, (len+4)*sizeof(char*));
                 data[++len]=(char*)malloc(2);
-                strcpy(data[len], "");
-                buf=(char*)malloc(2);
-                strcpy(buf, "");
+                //strcpy(data[len], "");
+                memset(data[len], 0, 2);
+                buf=(char*)calloc(0, 2);
+                //memset(buf, 0, 2);
                 count=0;
             }
             continue;
@@ -61,6 +63,9 @@ extern Array* parse(const char* s){
                         break;
                     }
                     switch(ch){
+                      case '"': case '\'':
+                        SAVETO(buf, count, ch);
+                        break;
                       case 'n': 
                         SAVETO(buf, count, '\n');
                         break;
@@ -127,8 +132,8 @@ extern Array* parse(const char* s){
     for(int i=0;i<=len;i++){
         if(strcmp(data[i], "")!=0||i==0){
             new=(char**)realloc(new, sizeof(char*)*(newlen+2));
-            new[newlen]=(char*)malloc(strlen(data[i])+2);
-            memset(new[newlen], 0, strlen(data[i])+1);
+            new[newlen]=(char*)calloc(0, strlen(data[i])+2);
+            //memset(new[newlen], 0, strlen(data[i])+2);
             strcpy(new[newlen++], data[i]);
         }
         if(i!=len)
