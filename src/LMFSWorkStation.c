@@ -13,6 +13,13 @@
 #include <string.h>
 #include <stdarg.h>
 
+double printloadedBLT(){
+    for(int i=0;i<ModuleNum;i++){
+        printf("%s\n", Modules[i].ModuleName);
+    }
+    return 0;
+}
+
 int InitLMFSWS(){
     int status;
     status=LoadModule("Input");
@@ -39,6 +46,7 @@ int InitLMFSWS(){
         return -1;
     }
     if(regist("register")==-1) return -1;
+    RegisterManual("builtin_printloaded", 1, printloadedBLT, NULL);
     return 0;
 }
 
@@ -97,6 +105,15 @@ int main(){
             type=Func[FuncIndex].type;
             double result;
             if(type!=-1){
+                int isusermode=CheckUserMode(Arg.argv[0]);
+                if(isusermode==1){
+                    fprintf(stderr, "\033[91;1mOperation denied\033[0m: This function may just for <Program internal run mode>\n");
+                    continue;
+                }
+                if(isusermode==-1){
+                    fprintf(stderr, "\033[91;1mMode Checker Failed\033[0m: This function was registered with unknow execution type\n");
+                    continue;
+                }
                 if(type==1){
                   result=GetFunc(Arg.argv[0]).Func(Arg);
                   if((int)result!=0){

@@ -154,7 +154,7 @@ int mod_helper(){
 double NF(){ return -1; }
 
 FuncList Regist[]={
-      {"parse", 2, NF, (void*)parse},
+      {"parse", 4, NF, (void*)parse},
       {NULL, -1, NF, NULL}
 };
 

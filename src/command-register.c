@@ -65,6 +65,30 @@ extern int regist(const char* name){
     }
     return 0;
 }
+extern int RegisterManual(char* name, int type, _Function func, PtrFunction ptrfunc){
+    FuncList Item={name, type, func, ptrfunc};
+    if(Item.name==NULL) return -1;
+    Func=(FuncList*)realloc(Func, sizeof(FuncList)*(FuncNum+1));
+    if(FindFunc(Item.name)!=-1){
+        int toend=0;
+        char* newname;
+        while(1){
+            newname=(char*)malloc(8+(strlen(Item.name))+2);
+            memset(newname, 0, 8+strlen(Item.name)+2);
+            sprintf(newname, "%s%d", Item.name, toend++);
+            if(FindFunc(newname)==-1){
+                printf("\033[95;1mWarning\033[0m: `%s' from module `%s' has the same name as another function so register renamed it to `%s'\n", Item.name, name, newname);
+                Item.name=(char*)calloc(0, strlen(newname)+2);
+                strcpy(Item.name, newname);
+                free(newname);
+                break;
+            }
+            free(newname);
+        }
+    }
+    Func[FuncNum++]=Item;
+    return 0;
+}
 
 extern int getType(const char* name){
     int Find=FindFunc(name);
@@ -73,6 +97,23 @@ extern int getType(const char* name){
         return -1;
     }
     return Func[Find].type;
+}
+
+extern int CheckUserMode(const char* name){
+    int Find=FindFunc(name);
+    if(Find==-1){
+        fprintf(stderr, "\033[91;1mFatal Error\033[0m: No function named `%s'\n", name);
+        return -1;
+    }
+    int type=-1;
+    switch(Func[Find].type){
+      case 1: case 2:
+        type=0;
+        break;
+      case 3: case 4:
+        type=1;
+    }
+    return type;
 }
 
 double NULLFUNC(){return -1;}

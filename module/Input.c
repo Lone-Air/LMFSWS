@@ -40,13 +40,13 @@ char* input(const char* prompt){
     char ch;
     while(1){
         ch=getchar();
-        if(ch=='\n'||ch=='\0'||ch==EOF) break;
+        if(ch=='\n'||ch=='\0') break;
         res=(char*)realloc(res, strlen(res)+1);
         res[strlen(res)]=ch;
     }
 #else
     res=readline(prompt);
-    if(res!=NULL) add_history(res);
+    if(res&&*res) add_history(res);
 #endif
     return res;
 }
@@ -56,7 +56,7 @@ int mod_start(int argc, char* argv[]){
 }
 
 FuncList Regist[]={
-      {"input", 2, NULLFUNC, (void*)input},
+      {"input", 4, NULLFUNC, (void*)input},
       {NULL, -1, NULLFUNC, NULL}
 };
 

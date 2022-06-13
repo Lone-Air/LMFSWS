@@ -77,6 +77,15 @@ double execext(int argc, char* argv[]){
     int type,result;
     type=getType(arg[0]);
     if(type!=-1){
+        int isusermode=CheckUserMode(arg[0]);
+        if(isusermode==1){
+            fprintf(stderr, "\033[91;1mOperation denied\033[0m: This function may just for <Program internal run mode>\n");
+            return -1;
+        }
+        if(isusermode==-1){
+            fprintf(stderr, "\033[91;1mMode Checker Failed\033[0m: This function was registered with unknow execution type\n");
+            return -1;
+        }
         if(type==1){
             result=GetFunc(arg[0]).Func(new);
             if((int)result!=0){
