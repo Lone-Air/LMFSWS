@@ -71,11 +71,14 @@ int main(){
                         continue;
                     }
                     int index=FindModule(Arg.argv[i]);
-                    if(i==-1) continue;
-                    _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
+                    if(index==-1){
+                        fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'. Maybe you can try 'exthelp'\n", Arg.argv[i]);
+                        continue;
+                    }
+                        _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
                     char* err=dlerror();
                     if(err!=NULL){
-                        fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\n", err);
+                        fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\nMaybe 'exthelp' will be successful\n", err);
                         continue;
                     }
                     helper();

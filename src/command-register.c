@@ -44,6 +44,23 @@ extern int regist(const char* name){
         Item=Modules[Find].FL[count++];
         if(Item.name==NULL) break;
         Func=(FuncList*)realloc(Func, sizeof(FuncList)*(FuncNum+1));
+        if(FindFunc(Item.name)!=-1){
+            int toend=0;
+            char* newname;
+            while(1){
+                newname=(char*)malloc(8+(strlen(Item.name))+2);
+                memset(newname, 0, 8+strlen(Item.name)+2);
+                sprintf(newname, "%s%d", Item.name, toend++);
+                if(FindFunc(newname)==-1){
+                    printf("\033[95;1mWarning\033[0m: `%s' from module `%s' has the same name as another function so register renamed it to `%s'\n", Item.name, name, newname);
+                    Item.name=(char*)calloc(0, strlen(newname)+2);
+                    strcpy(Item.name, newname);
+                    free(newname);
+                    break;
+                }
+                free(newname);
+            }
+        }
         Func[FuncNum++]=Item;
     }
     return 0;

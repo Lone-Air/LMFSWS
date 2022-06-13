@@ -25,10 +25,10 @@ extern Array* parse(const char* s){
     int ch;
     int str;
     int c;
-    char* buf=(char*)malloc(2);
-    data[len]=(char*)malloc(2);
-    memset(buf, 0, 2);
-    memset(data[len], 0, 2);
+    char* buf=(char*)calloc(0, 2);
+    data[len]=(char*)calloc(0, 2);
+    /*memset(buf, 0, 2);
+    memset(data[len], 0, 2);*/
     while((ch=*(s++))!='\0'){
         if(ch==' '||ch=='\t'){
             if(strcmp(buf, "")!=0){
@@ -36,7 +36,7 @@ extern Array* parse(const char* s){
                 //memset(data[len], 0, count+2);
                 strncpy(data[len], buf, count);
                 //strcpy(data[len], buf);
-                data=(char**)realloc(data, (len+4)*sizeof(char*));
+                data=(char**)realloc(data, (len+2)*sizeof(char*));
                 data[++len]=(char*)malloc(2);
                 //strcpy(data[len], "");
                 memset(data[len], 0, 2);

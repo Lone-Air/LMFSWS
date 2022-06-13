@@ -42,11 +42,14 @@ double exthelp(int argc, char* argv[]){
                 continue;
             }
             int index=FindModule(argv[i]);
-            if(i==-1) continue;
+            if(index==-1){
+                fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'. Please use 'printloaded' to see what loaded\n", argv[i]);
+                continue;
+            }
             _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
             char* err=dlerror();
             if(err!=NULL){
-                fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\n", err);
+                fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\nPlease check module status\n", err);
                 continue;
             }
             helper();
@@ -60,8 +63,7 @@ double execext(int argc, char* argv[]){
     int count=0;
     char** arg=(char**)malloc(((argc+1)*sizeof(char*)));
     for(int i=1;i<argc;i++){
-        arg[count]=(char*)malloc(strlen(argv[i])+2);
-        memset(arg[count], 0, strlen(argv[i])+2);
+        arg[count]=(char*)calloc(0, strlen(argv[i])+2);
         strcpy(arg[count++], argv[i]);
     }
     new.argc=argc-1;
