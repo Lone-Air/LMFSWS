@@ -23,7 +23,7 @@ int mod_helper(){
     printf("    regist <modules...>\n");
     printf("    import <modules...>\n");
     printf("    printloaded\n");
-    printf("    execext <command> [args...]");
+    printf("    execext <command> [args...]\n");
     printf("    exthelp <modules...>\n");
     printf("LMFSWorkStation Built-in Command.\n");
 }
