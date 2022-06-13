@@ -28,6 +28,12 @@ int mod_helper(){
     printf("LMFSWorkStation Built-in Command.\n");
 }
 
+int mod_close(){
+    CloseModules();
+    CloseFuncPool();
+    return 0;
+}
+
 double exthelp(int argc, char* argv[]){
     if(argc<2){
         printf("LMFS WorkStation 2022 - Work ToolBox - Core Command\n");

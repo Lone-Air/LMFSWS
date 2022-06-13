@@ -31,6 +31,7 @@ struct Module{
     char* ModuleName;
     void* dlheader;
     _Function Init;
+    _Function Close;
     FuncList* FL;
 };
 

@@ -17,6 +17,8 @@
 Module* Modules;
 long int ModuleNum;
 
+double NF_C(){ return 0; }
+
 static char* load(FILE* F){
     fseek(F,0L,SEEK_END);
     uint64_t size=ftell(F);
@@ -52,6 +54,7 @@ extern int LoadModule(const char* mod_name){
     void* dlh;
     FuncList* list;
     _Function Init;
+    _Function closeit;
 
     char* ER;
     int err=0;
@@ -126,8 +129,13 @@ extern int LoadModule(const char* mod_name){
         goto finish;
     }
 
+    closeit=dlsym(dlh, "mod_close");
+    if(dlerror()!=NULL){
+        closeit=NF_C;
+    }
+
     Modules=(Module*)realloc(Modules, (ModuleNum+1)*sizeof(Module));
-    Modules[ModuleNum]=(Module){(char*)malloc(strlen(mod_name)+1), dlh, Init, list};
+    Modules[ModuleNum]=(Module){(char*)malloc(strlen(mod_name)+1), dlh, Init, closeit, list};
     strcpy(Modules[ModuleNum++].ModuleName, mod_name);
 
 finish:
@@ -191,6 +199,7 @@ extern void* GetPtrFunction(const char* name, const char* func){
 
 extern int CloseModules(){
     for(int i=0;i<ModuleNum;i++){
+        Modules[i].Close();
         dlclose(Modules[i].dlheader);
         free(Modules[i].ModuleName);
     }
