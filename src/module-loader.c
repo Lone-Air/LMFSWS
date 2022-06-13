@@ -159,6 +159,7 @@ extern int RemoveLoaded(const char* name){
         return -1;
     }
     dlclose(Modules[Find].dlheader);
+    Modules[Find].Close();
     free(Modules[Find].ModuleName);
     Module* new=(Module*)malloc(sizeof(Module)*(ModuleNum-1));
     if(new==NULL){
