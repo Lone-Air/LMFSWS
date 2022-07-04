@@ -35,8 +35,7 @@ char* input(const char* prompt){
     char* res;
 #ifndef HAVE_READLINE
     printf("%s", prompt);
-    res=(char*)malloc(1);
-    bzero(res, strlen(res));
+    res=(char*)calloc(0, 2);
     char ch;
     while(1){
         ch=getchar();
