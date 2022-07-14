@@ -108,12 +108,12 @@ function part_main(){
     # MAIN
     tell 'for i in $FILES
 do
-    run ${CC} $CFLAGS ../src/$i -o $i.o -c -fPIC
+    run ${CC} $CFLAGS ../src/$i -o $i.o -c $SOFLAGS
 done'
 
     for i in $FILES
     do
-        run ${CC} $CFLAGS ../src/$i -o $i.o -c -fPIC
+        run ${CC} $CFLAGS ../src/$i -o $i.o -c $SOFLAGS
     done
 
     run ${CC} $LDFLAGS *.o -o ${OBJECT}
