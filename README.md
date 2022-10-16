@@ -11,6 +11,8 @@ $ cd LMFSWS
 $ sudo ./build.sh
 ```
 
+At present, it does not support for Windows, and "segmentation fault" will appear for no reason. The reason is unknown, and it is normal under Linux
+
 ## How to build a external module?
 
 1. Required function: mod_init
@@ -22,7 +24,7 @@ $ sudo ./build.sh
 
 int mod_init(){
     /* Do something... */
-    return 0; // If it is successful
+    return 0; // If it successfully
 }
 
 double Fun1(){ return 1+1; }
@@ -41,10 +43,10 @@ FuncList Regist[]={
         "Fun2",
         2,
         NF, // Empty Function to fill the Normal Function space
-        (void*)Fun2 // Pointer Function (force convert type to void*!)
+        (void*)Fun2 // Pointer Function (force to convert the type to void*!)
     },
     {
-        NULL, // End of Regists List. You should follow the style
+        NULL, // End of Register List. You should follow the style
         -1,
         NF,
         NULL
