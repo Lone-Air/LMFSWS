@@ -69,7 +69,7 @@ double execext(int argc, char* argv[]){
     int count=0;
     char** arg=(char**)malloc(((argc+1)*sizeof(char*)));
     for(int i=1;i<argc;i++){
-        arg[count]=(char*)calloc(0, strlen(argv[i])+2);
+        arg[count]=(char*)calloc(strlen(argv[i])+2, sizeof(char*));
         strcpy(arg[count++], argv[i]);
     }
     new.argc=argc-1;
@@ -79,7 +79,7 @@ double execext(int argc, char* argv[]){
     if(type!=-1){
         int isusermode=CheckUserMode(arg[0]);
         if(isusermode==1){
-            fprintf(stderr, "\033[91;1mOperation denied\033[0m: This function may just for <Program internal run mode>\n");
+            fprintf(stderr, "\033[91;1mOperation denied\033[0m: This function may just for <Program internal running mode>\n");
             return -1;
         }
         if(isusermode==-1){
