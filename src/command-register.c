@@ -53,7 +53,7 @@ extern int regist(const char* name){
                 sprintf(newname, "%s%d", Item.name, toend++);
                 if(FindFunc(newname)==-1){
                     printf("\033[95;1mWarning\033[0m: `%s' from module `%s' has the same name as another function so register renamed it to `%s'\n", Item.name, name, newname);
-                    Item.name=(char*)calloc(0, strlen(newname)+2);
+                    Item.name=(char*)calloc(strlen(newname)+2, sizeof(char*));
                     strcpy(Item.name, newname);
                     free(newname);
                     break;
@@ -78,7 +78,7 @@ extern int RegisterManual(char* name, int type, _Function func, PtrFunction ptrf
             sprintf(newname, "%s%d", Item.name, toend++);
             if(FindFunc(newname)==-1){
                 printf("\033[95;1mWarning\033[0m: `%s' from module `%s' has the same name as another function so register renamed it to `%s'\n", Item.name, name, newname);
-                Item.name=(char*)calloc(0, strlen(newname)+2);
+                Item.name=(char*)calloc(strlen(newname)+2, sizeof(char*));
                 strcpy(Item.name, newname);
                 free(newname);
                 break;
