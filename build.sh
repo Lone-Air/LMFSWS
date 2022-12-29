@@ -28,6 +28,7 @@ function _help(){
        -module     Enable modules part
        -install    Enable automatic install
        -debug      Append '-ggdb3' to \$CFLAGS
+       -windows    Delete compiler-flag '-fPIC'
        -version    Show version of the cloned LMFSWS source
        -help       Show this message
     "
@@ -60,6 +61,8 @@ function _start(){
             CFLAGS="$CFLAGS -ggdb3"
         elif [ "$i" = "-version" ]; then
             cat VERSION
+        elif [ "$i" = "-windows" ]; then
+            SOFLAGS=${SOFLAGS:5}
         elif [ "$i" = "-help" ]; then
             _help
         else

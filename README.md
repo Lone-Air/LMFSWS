@@ -10,7 +10,7 @@ $ git clone https://github.com/Lone-Air/LMFSWS
 $ cd LMFSWS
 $ sudo ./build.sh
 ```
-It supported Windows now!
+It supports Windows now!
 
 ## How to build a external module?
 
