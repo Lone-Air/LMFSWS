@@ -15,33 +15,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SAVETO(a, counter, c) a=(char*)realloc(a, counter+2); \
+#define SAVETO(a, counter, c) a=(char*)realloc(a, counter+1); \
                               a[counter++]=c;\
 
 extern Array* parse(const char* s){
     size_t len=0;
-    char** data=(char**)malloc(sizeof(char*)*2);
+    char** data=(char**)calloc(2, sizeof(char*));
     int count=0;
     int ch;
     int str;
     int c;
-    char* buf=(char*)calloc(0, 2);
-    data[len]=(char*)calloc(0, 2);
-    /*memset(buf, 0, 2);
-    memset(data[len], 0, 2);*/
+    char* buf=(char*)calloc(2, sizeof(char*));
+    data[len]=(char*)calloc(2, sizeof(char*));
     while((ch=*(s++))!='\0'){
         if(ch==' '||ch=='\t'){
             if(strcmp(buf, "")!=0){
-                data[len]=(char*)calloc(0, count+2);
-                //memset(data[len], 0, count+2);
+                data[len]=(char*)calloc(count+1, sizeof(char*));
                 strncpy(data[len], buf, count);
-                //strcpy(data[len], buf);
                 data=(char**)realloc(data, (len+2)*sizeof(char*));
-                data[++len]=(char*)malloc(2);
-                //strcpy(data[len], "");
+                data[++len]=(char*)calloc(2, sizeof(char*));
                 memset(data[len], 0, 2);
-                buf=(char*)calloc(0, 2);
-                //memset(buf, 0, 2);
+                buf=(char*)calloc(2, sizeof(char*));
                 count=0;
             }
             continue;
@@ -122,18 +116,16 @@ extern Array* parse(const char* s){
         }
     }
     if(strcmp(buf, "")!=0){
-        /*data[len]=(char*)calloc(0, count+2);
-        strcpy(data[len], buf);*/
-        data[len]=buf;
+        data[len]=(char*)calloc(strlen(buf)+1, sizeof(char));
+        strcpy(data[len], buf);
     }
     Array result[1];
-    char** new=(char**)malloc(sizeof(char*)*2);
+    char** new=(char**)calloc(2, sizeof(char*));
     long int newlen=0;
     for(int i=0;i<=len;i++){
         if(strcmp(data[i], "")!=0||i==0){
-            new=(char**)realloc(new, sizeof(char*)*(newlen+2));
-            new[newlen]=(char*)calloc(0, strlen(data[i])+2);
-            //memset(new[newlen], 0, strlen(data[i])+2);
+            new=(char**)realloc(new, sizeof(char*)*(newlen+1));
+            new[newlen]=(char*)calloc(strlen(data[i])+1, sizeof(char));
             strcpy(new[newlen++], data[i]);
         }
         if(i!=len)

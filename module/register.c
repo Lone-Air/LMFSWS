@@ -67,14 +67,15 @@ double exthelp(int argc, char* argv[]){
 double execext(int argc, char* argv[]){
     ArgList new;
     int count=0;
-    char** arg=(char**)malloc(((argc+1)*sizeof(char*)));
+    char** arg=(char**)calloc(argc+1,sizeof(char*));
     for(int i=1;i<argc;i++){
         arg[count]=(char*)calloc(strlen(argv[i])+2, sizeof(char*));
         strcpy(arg[count++], argv[i]);
     }
     new.argc=argc-1;
     new.argv=arg;
-    int type,result;
+    int type;
+    double result;
     type=getType(arg[0]);
     if(type!=-1){
         int isusermode=CheckUserMode(arg[0]);
