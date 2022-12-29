@@ -1,0 +1,3 @@
+"LMFS WorkStation - LMFS. It's a free(libre) software - "
+#include <VERSION>
+"\nUse 'help <modules>' for help. Use 'builtin_printloaded' to see modules loaded when starting."

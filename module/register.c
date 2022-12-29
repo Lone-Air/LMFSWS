@@ -101,6 +101,10 @@ double execext(int argc, char* argv[]){
 
 double include(int argc, char* argv[]){
     for(int i=1;i<argc;i++){
+        if(strcmp(argv[i], "register")==0){
+            fprintf(stderr, "\033[91;1mError\033[0m: You can't include 'register' itself!\n");
+            continue;
+        }
         LoadModule(argv[i]);
     };
     return 0;
@@ -115,6 +119,10 @@ double _regist(int argc, char* argv[]){
 
 double import(int argc, char* argv[]){
     for(int i=1;i<argc;i++){
+        if(strcmp(argv[i], "register")==0){
+            fprintf(stderr, "\033[91;1mError\033[0m: You can't include 'register' itself!\n");
+            continue;
+        }
         if(LoadModule(argv[i])!=-1){
             regist(argv[i]);
         }

@@ -111,12 +111,12 @@ function part_main(){
     # MAIN
     tell 'for i in $FILES
 do
-    run ${CC} $CFLAGS ../src/$i -o $i.o -c $SOFLAGS
+    run ${CC} $CFLAGS -I.. ../src/$i -o $i.o -c $SOFLAGS
 done'
 
     for i in $FILES
     do
-        run ${CC} $CFLAGS ../src/$i -o $i.o -c $SOFLAGS
+        run ${CC} $CFLAGS -I.. ../src/$i -o $i.o -c $SOFLAGS
     done
 
     run ${CC} $LDFLAGS *.o -o ${OBJECT}
@@ -148,6 +148,9 @@ function part_module(){
 
     ## System Command Execute - External
     run ${CC} ../module/system.c -I../include ${SOFLAGS} -o modules/system.so $CFLAGS
+
+    ## Exit LMFSWS - Required
+    run ${CC} ../module/exit.c -I../include ${SOFLAGS} -o modules/exit.so $CFLAGS
 }
 
 function part_install(){
