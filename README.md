@@ -10,8 +10,7 @@ $ git clone https://github.com/Lone-Air/LMFSWS
 $ cd LMFSWS
 $ sudo ./build.sh
 ```
-
-At present, it does not support for Windows, and "segmentation fault" will appear for no reason. The reason is unknown, and it is normal under Linux
+It supported Windows now!
 
 ## How to build a external module?
 
