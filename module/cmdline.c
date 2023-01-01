@@ -25,17 +25,17 @@ extern Array* parse(const char* s){
     int ch;
     int str;
     int c;
-    char* buf=(char*)calloc(2, sizeof(char*));
-    data[len]=(char*)calloc(2, sizeof(char*));
+    char* buf=(char*)calloc(2, sizeof(char));
+    data[len]=(char*)calloc(2, sizeof(char));
     while((ch=*(s++))!='\0'){
         if(ch==' '||ch=='\t'){
             if(strcmp(buf, "")!=0){
-                data[len]=(char*)calloc(count+1, sizeof(char*));
+                data[len]=(char*)calloc(count+1, sizeof(char));
                 strncpy(data[len], buf, count);
                 data=(char**)realloc(data, (len+2)*sizeof(char*));
-                data[++len]=(char*)calloc(2, sizeof(char*));
+                data[++len]=(char*)calloc(2, sizeof(char));
                 memset(data[len], 0, 2);
-                buf=(char*)calloc(2, sizeof(char*));
+                buf=(char*)calloc(2, sizeof(char));
                 count=0;
             }
             continue;
