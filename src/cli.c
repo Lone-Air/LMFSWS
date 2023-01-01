@@ -27,7 +27,7 @@ double help_LMFSWS(int argc, char** argv){
         if(copy->arg.flagShort!='\0')
           fprintf(stdout, "    -%c --%s\t%s\n", copy->arg.flagShort, copy->arg.flagFull, copy->arg.disc);
         else
-         fprintf(stdout, "    --%s\t%s\n", copy->arg.flagFull, copy->arg.disc); 
+          fprintf(stdout, "    --%s\t%s\n", copy->arg.flagFull, copy->arg.disc); 
         copy=copy->next;
     }
     return 0;
@@ -342,10 +342,10 @@ void doLMFSWSCmd(const char* data){
                 return;
             }
             if(type==1){
-              result=GetFunc(Arg.argv[0]).Func(Arg.argc, Arg.argv);
-              if((int)result!=0){
-                  printf("Result=%lf\n", result);
-              }
+                result=GetFunc(Arg.argv[0]).Func(Arg.argc, Arg.argv);
+                if((int)result!=0){
+                    printf("Result=%lf\n", result);
+                }
             }
             else if(type==2){
                 GetFunc(Arg.argv[0]).PtrFunc(Arg);
@@ -386,7 +386,6 @@ extern int InitLMFSWS(){
     if(status==-1){
         fprintf(stderr, "LMFS WorkStation has crashed\n");
         return -1;
-                fprintf(stdout, "\033[95;1mWarning\033[0m: No argument was gotten for this parameter\n");
     }
     if(regist("cmdline")==-1) return -1;
     status=LoadModule("version");
