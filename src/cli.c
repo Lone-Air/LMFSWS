@@ -218,7 +218,6 @@ void callArgs(int argc, char** argv){
             }
             switch(temp.ArgType){
               case 1:
-                fprintf(stdout, "\033[95;1mWarning\033[0m: No argument was gotten for this parameter\n");
                 callArgFunc(temp, (ArgList){0, EMPTY_LIST});
                 break;
               case 2:
