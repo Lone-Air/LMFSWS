@@ -15,7 +15,7 @@
 
 int mod_init(){ return 0; }
 int mod_helper(){
-    printf("LMFS WorkStation 2022 - Work ToolBox - Core\n");
+    printf("LMFS WorkStation - Work ToolBox - Core\n");
     printf("    version\n");
     printf("LMFSWorkStation Builtin.\n");
     return 0;

@@ -138,7 +138,7 @@ extern Array* parse(const char* s){
 
 int mod_init(){ return 0; }
 int mod_helper(){
-    printf("LMFS WorkStation 2022 - Work ToolBox\n");
+    printf("LMFS WorkStation - Work ToolBox\n");
     printf("    parse <string>\n");
     printf("LMFSWorkStation Built-in. Don't Use it in a script!\n");
 }
@@ -150,12 +150,3 @@ FuncList Regist[]={
       {NULL, -1, NF, NULL}
 };
 
-/*
-int main(){
-#include <readline/readline.h>
-    while(1){
-        char* s=readline("> ");
-        Array arr=parse(s)[0];
-    }
-}
-*/

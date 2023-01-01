@@ -300,7 +300,7 @@ void doLMFSWSCmd(const char* data){
         if(Arg.argc>1){
             for(int i=1;i<Arg.argc;i++){
                 if(strcmp(Arg.argv[i], "help")==0){
-                    printf("LMFS WorkStation 2022 - Work ToolBox - BUILTIN\n");
+                    printf("LMFS WorkStation - Work ToolBox - BUILTIN\n");
                     printf("    help <modules...>\n");
                     printf("LMFSWorkStation Builtin.\n");
                     return;
@@ -386,6 +386,7 @@ extern int InitLMFSWS(){
     if(status==-1){
         fprintf(stderr, "LMFS WorkStation has crashed\n");
         return -1;
+                fprintf(stdout, "\033[95;1mWarning\033[0m: No argument was gotten for this parameter\n");
     }
     if(regist("cmdline")==-1) return -1;
     status=LoadModule("version");

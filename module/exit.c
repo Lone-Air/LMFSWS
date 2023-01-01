@@ -13,7 +13,7 @@
 
 int mod_init(){ return 0; }
 int mod_helper(){
-    printf("LMFS WorkStation 2022 - Work ToolBox\n");
+    printf("LMFS WorkStation - Work ToolBox\n");
     printf("    exit [code]\n");
     printf("LMFSWorkStation Built-in command.\n");
 }

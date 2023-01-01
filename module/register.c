@@ -18,7 +18,7 @@
 
 
 int mod_helper(){
-    printf("LMFS WorkStation 2022 - Work ToolBox - Core Command\n");
+    printf("LMFS WorkStation - Work ToolBox - Core Command\n");
     printf("    include <modules...>\n");
     printf("    regist <modules...>\n");
     printf("    import <modules...>\n");
@@ -36,13 +36,13 @@ int mod_close(){
 
 double exthelp(int argc, char* argv[]){
     if(argc<2){
-        printf("LMFS WorkStation 2022 - Work ToolBox - Core Command\n");
+        printf("LMFS WorkStation - Work ToolBox - Core Command\n");
         printf("    exthelp <modules...>\n");
         printf("LMFSWorkStation Built-in Command.\n");
     }else{
         for(int i=1;i<argc;i++){
             if(strcmp(argv[i], "help")==0){
-                printf("LMFS WorkStation 2022 - Work ToolBox - Core Command\n");
+                printf("LMFS WorkStation - Work ToolBox - Core Command\n");
                 printf("    exthelp <modules...>\n");
                 printf("LMFSWorkStation Builtin.\n");
                 continue;
