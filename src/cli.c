@@ -342,7 +342,7 @@ void doLMFSWSCmd(const char* data){
                 return;
             }
             if(type==1){
-              result=GetFunc(Arg.argv[0]).Func(Arg);
+              result=GetFunc(Arg.argv[0]).Func(Arg.argc, Arg.argv);
               if((int)result!=0){
                   printf("Result=%lf\n", result);
               }
@@ -361,7 +361,7 @@ void doLMFSWSCmd(const char* data){
             strcpy(newargv[_count++], Arg.argv[i]);
         }
         ArgList newarg={_count, newargv};
-        GetFunc("execext").Func(newarg);
+        GetFunc("execext").Func(newarg.argc, newarg.argv);
         for(int i=1;i<_count;i++)
           free(newargv[i]);
     }
