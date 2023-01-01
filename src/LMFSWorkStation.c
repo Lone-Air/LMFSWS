@@ -31,7 +31,7 @@ static double _get_version(int argc, char** argv){
 static double run(int argc, char** argv){
     for(int i=0;i<argc;i++){
         runNormallyFile(argv[i]);
-    }\
+    }
     return 0;
 }
 

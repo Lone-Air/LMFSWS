@@ -12,6 +12,11 @@
 #include <string.h>
 #include <stdint.h>
 
+#ifdef __WIN32__
+  #include <io.h>
+  #define getcwd _getcwd
+#endif
+
 #include <unistd.h>
 
 Module* Modules;
