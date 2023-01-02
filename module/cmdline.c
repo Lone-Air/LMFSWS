@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SAVETO(a, counter, c) a=(char*)realloc(a, counter+1); \
+#define SAVETO(a, counter, c) a=(char*)realloc(a, (counter+2)*sizeof(char)); \
                               a[counter++]=c;\
 
 extern ArrayList* parse(const char* s){
@@ -125,7 +125,7 @@ extern ArrayList* parse(const char* s){
             newlen=0;
             for(int i=0;i<=len;i++){
                 if(strcmp(data[i], "")!=0||i==0){
-                    new=(char**)realloc(new, sizeof(char*)*(newlen+1));
+                    new=(char**)realloc(new, sizeof(char*)*(newlen+2));
                     new[newlen]=(char*)calloc(strlen(data[i])+1, sizeof(char));
                     strcpy(new[newlen++], data[i]);
                 }
