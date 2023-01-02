@@ -157,6 +157,12 @@ finish:
     return 0;
 }
 
+extern void AddModuleInfo(Module _mod){
+    Modules=(Module*)realloc(Modules, (ModuleNum+1)*sizeof(Module));
+    Modules[ModuleNum]=(Module){(char*)malloc(strlen(_mod.ModuleName)+1), _mod.dlheader, _mod.Init, _mod.Close, _mod.FL};
+    strcpy(Modules[ModuleNum++].ModuleName, _mod.ModuleName);
+}
+
 extern int RemoveLoaded(const char* name){
     int Find=FindModule(name);
     if(Find==-1){
@@ -206,6 +212,16 @@ extern void* GetPtrFunction(const char* name, const char* func){
 extern int CloseModules(){
     for(int i=0;i<ModuleNum;i++){
         Modules[i].Close();
+        dlclose(Modules[i].dlheader);
+        free(Modules[i].ModuleName);
+    }
+    ModuleNum=0;
+    free(Modules);
+    return 0;
+}
+
+extern int CloseModulesPart(){
+    for(int i=0;i<ModuleNum;i++){
         dlclose(Modules[i].dlheader);
         free(Modules[i].ModuleName);
     }

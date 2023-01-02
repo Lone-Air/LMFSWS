@@ -102,6 +102,7 @@ function tell(){
 }
 
 function part_main(){
+    rm -rf build
     runNoEXIT mkdir build
     run cd src
     FILES=$(ls *.c)
@@ -137,20 +138,12 @@ function part_module(){
     ## Command Line - Required
     run ${CC} ../module/cmdline.c -I../include ${SOFLAGS} -o modules/cmdline.so $CFLAGS
 
-    ## Version information - Required
-    run ${CC} ../module/version.c -I.. -I../include ${SOFLAGS} -o modules/version.so $CFLAGS
-
     ## Extenal Modules User Mode Loader - Required
     run ${CC} ../module/register.c command-register.c.o module-loader.c.o -I../include ${SOFLAGS} -o modules/register.so $CFLAGS
 
-    ## Text Printer - External
-    run ${CC} ../module/echo.c -I../include ${SOFLAGS} -o modules/echo.so $CFLAGS
+    ## Core commands - Required
+    run ${CC} ../module/tools.c -I../include ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS
 
-    ## System Command Execute - External
-    run ${CC} ../module/system.c -I../include ${SOFLAGS} -o modules/system.so $CFLAGS
-
-    ## Exit LMFSWS - Required
-    run ${CC} ../module/exit.c -I../include ${SOFLAGS} -o modules/exit.so $CFLAGS
 }
 
 function part_install(){

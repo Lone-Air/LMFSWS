@@ -14,7 +14,12 @@ typedef struct Array{
     size_t length;
 }Array;
 
-extern Array* parse(const char* s);
+typedef struct ArrayList{
+    unsigned int len;
+    Array** l;
+}ArrayList;
+
+extern ArrayList* parse(const char* s);
 
 #endif
 

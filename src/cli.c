@@ -18,7 +18,7 @@ char** EMPTY_LIST={0};
 ArgumentsList* DefaultArgPool;
 ArgumentsList* DefaultArgPoolHead;
 
-double help_LMFSWS(int argc, char** argv){
+extern double help_LMFSWS(int argc, char** argv){
     ArgumentsList* copy=DefaultArgPoolHead;
     fprintf(stdout, "LMFSWorkStation - LMFS. Org. - "
 #include "VERSION"
@@ -33,7 +33,7 @@ double help_LMFSWS(int argc, char** argv){
     return 0;
 }
 
-void InitArgPool(){
+extern void InitArgPool(){
     DefaultArgPool=(ArgumentsList*)calloc(1, sizeof(ArgumentsList));
     DefaultArgPoolHead=DefaultArgPool;
     DefaultArgPool->last=NULL;
@@ -45,7 +45,7 @@ void InitArgPool(){
     DefaultArgPool->arg.callf=(_Function)help_LMFSWS;
 }
 
-void RegisterArg(Argument Argu){
+extern void RegisterArg(Argument Argu){
     DefaultArgPool->last=DefaultArgPool;
     DefaultArgPool->next=(ArgumentsList*)calloc(1, sizeof(ArgumentsList));
     DefaultArgPool=DefaultArgPool->next;
@@ -59,9 +59,9 @@ void RegisterArg(Argument Argu){
     DefaultArgPool->arg.callf=Argu.callf;
 }
 
-double NF(){ return -1; }
+static double NF(){ return -1; }
 
-Argument GetArgByFullFlag(char* fullflag){
+extern Argument GetArgByFullFlag(char* fullflag){
     ArgumentsList* copy=DefaultArgPoolHead;
     while(copy!=NULL){
         if(strcmp(copy->arg.flagFull, fullflag)==0) return copy->arg;
@@ -70,7 +70,7 @@ Argument GetArgByFullFlag(char* fullflag){
     return (Argument){0, NULL, NULL, -1, NF};
 }
 
-Argument GetArgByShortFlag(char shortflag){
+extern Argument GetArgByShortFlag(char shortflag){
     ArgumentsList* copy=DefaultArgPoolHead;
     while(copy!=NULL){
         if(copy->arg.flagShort==shortflag) return copy->arg;
@@ -79,7 +79,7 @@ Argument GetArgByShortFlag(char shortflag){
     return (Argument){0, NULL, NULL, -1, NF};
 }
 
-bool check_including(char* s1, char c){
+static bool check_including(char* s1, char c){
     int ch;
     while((ch=*s1)!='\0'){
         if(ch==c) return true;
@@ -89,7 +89,7 @@ bool check_including(char* s1, char c){
     return false;
 }
 
-ArgWithAl decompose(char* s){
+static ArgWithAl decompose(char* s){
     char* buf=(char*)calloc(1, sizeof(char));
     unsigned int bufLen=0;
     char* name;
@@ -152,7 +152,7 @@ ArgWithAl decompose(char* s){
     return (ArgWithAl){name, (ArgList){arglLen, argl}};
 }
 
-void callArgs(int argc, char** argv){
+extern void callArgs(int argc, char** argv){
     char* s; int _c=1;
     char** argL=(char**)calloc(1, sizeof(char*));
     int argLlen=0;
@@ -283,95 +283,129 @@ void callArgs(int argc, char** argv){
     }
 }
 
-double callArgFunc(Argument arg, ArgList al){
+extern double callArgFunc(Argument arg, ArgList al){
     return arg.callf(al.argc, al.argv);
 }
 
-void doLMFSWSCmd(const char* data){
-    PtrFunction parse=GetFunc("parse").PtrFunc;
-    Array* Args=parse(data);
-    ArgList Arg;
-    int type;
-    if(Args[0].length<1||strcmp(Args[0].data[0], "")==0) return;
-    if(Args[0].data[0][0]=='#') return;
-    Arg.argc=Args[0].length-1;
-    Arg.argv=Args[0].data;
-    if(strcmp(Arg.argv[0], "help")==0){
-        if(Arg.argc>1){
-            for(int i=1;i<Arg.argc;i++){
-                if(strcmp(Arg.argv[i], "help")==0){
-                    printf("LMFS WorkStation - Work ToolBox - BUILTIN\n");
-                    printf("    help <modules...>\n");
-                    printf("LMFSWorkStation Builtin.\n");
-                    return;
-                }
-                int index=FindModule(Arg.argv[i]);
-                if(index==-1){
-                    fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'. Maybe you can try 'exthelp'\n", Arg.argv[i]);
-                    return;
-                }
-                    _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
-                char* err=dlerror();
-                if(err!=NULL){
-                    fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\nMaybe 'exthelp' will be successful\n", err);
-                    return;
-                }
-                helper();
-            }
-            return;
-        }
-        else{
-            printf("LMFS WorkStation 2022 - Work ToolBox - BUILTIN\n");
-            printf("    help <modules...>\n");
-            printf("LMFSWorkStation Builtin.\n");
-            return;
-        }
+static void _sync_main_part(){
+    PtrFunction _sync_m=GetFunc("sync_main").PtrFunc;
+    FuncListArr* _sm=_sync_m();
+    CloseFuncPool();
+    InitFuncPool();
+    for(int i=0; i<_sm->_FuncNum; i++){
+        RegisterManual(_sm->_Func[i].name, _sm->_Func[i].type, _sm->_Func[i].Func, _sm->_Func[i].PtrFunc);
     }
-    int FuncIndex=FindFunc(Arg.argv[0]);
-    if(FuncIndex!=-1){
-        type=Func[FuncIndex].type;
-        double result;
-        if(type!=-1){
-            int isusermode=CheckUserMode(Arg.argv[0]);
-            if(isusermode==1){
-                fprintf(stderr, "\033[91;1mOperation denied\033[0m: This function may just for <Program internal run mode>\n");
-                return;
-            }
-            if(isusermode==-1){
-                fprintf(stderr, "\033[91;1mMode Checker Failed\033[0m: This function was registered with unknow execution type\n");
-                return;
-            }
-            if(type==1){
-                result=GetFunc(Arg.argv[0]).Func(Arg.argc, Arg.argv);
-                if((int)result!=0){
-                    printf("Result=%lf\n", result);
-                }
-            }
-            else if(type==2){
-                GetFunc(Arg.argv[0]).PtrFunc(Arg);
-            }
-        }
-    }else{
-        char** newargv=(char**)malloc((Arg.argc+2)*sizeof(char*));
-        int _count=0;
-        newargv[0]="execext";
-        for(int i=0;i<Arg.argc;i++){
-            newargv[_count]=(char*)malloc(strlen(Arg.argv[i])+2);
-            memset(newargv[_count], 0, strlen(Arg.argv[i])+2);
-            strcpy(newargv[_count++], Arg.argv[i]);
-        }
-        ArgList newarg={_count, newargv};
-        GetFunc("execext").Func(newarg.argc, newarg.argv);
-        for(int i=1;i<_count;i++)
-          free(newargv[i]);
+    FuncNum=_sm->_FuncNum;
+}
+
+static void _sync_mod_main_part(){
+    PtrFunction _sync_m_m=GetFunc("sync_mod_main").PtrFunc;
+    ModuleList* _smm=_sync_m_m();
+    Module* _mds=_smm->_m;
+    unsigned int _ModN=_smm->_mn;
+    CloseModulesPart();
+    InitModulePool();
+    for(int i=0; i<_ModN; i++){
+        AddModuleInfo(_mds[i]);
     }
 }
 
-static double printloadedBLT(){
-    for(int i=0;i<ModuleNum;i++){
-        printf("%s\n", Modules[i].ModuleName);
+extern void doLMFSWSCmd(const char* data){
+    GetFunc("sync").Func(Func, FuncNum);
+    GetFunc("sync_mod").Func(Modules, ModuleNum);
+    PtrFunction parse=GetFunc("parse").PtrFunc;
+    ArrayList* cmds=parse(data);
+    for(int inter=0; inter<cmds->len; inter++){
+        Array* Args=cmds->l[inter];
+        ArgList Arg;
+        int type;
+        if(Args[0].length<1||strcmp(Args[0].data[0], "")==0) return;
+        if(Args[0].data[0][0]=='#') return;
+        Arg.argc=Args[0].length-1;
+        Arg.argv=Args[0].data;
+        if(strcmp(Arg.argv[0], "help")==0){
+            if(Arg.argc>1){
+                for(int i=1;i<Arg.argc;i++){
+                    if(strcmp(Arg.argv[i], "help")==0){
+                        printf("LMFS WorkStation - Work ToolBox - BUILTIN\n");
+                        printf("    help <modules...>\n");
+                        printf("LMFSWorkStation Builtin.\n");
+                        return;
+                    }
+                    int index=FindModule(Arg.argv[i]);
+                    if(index==-1){
+                        char** newargv_=(char**)malloc((Arg.argc+2)*sizeof(char*));
+                        int count=0;
+                        newargv_[0]="exthelp";
+                        for(int i=0;i<Arg.argc;i++){
+                            newargv_[count]=(char*)malloc(strlen(Arg.argv[i])+2);
+                            memset(newargv_[count], 0, strlen(Arg.argv[i])+2);
+                            strcpy(newargv_[count++], Arg.argv[i]);
+                        }
+                        ArgList newarg_={count, newargv_};
+                        GetFunc("exthelp").Func(newarg_.argc, newarg_.argv);
+                        for(int i=1;i<count;i++)
+                          free(newargv_[i]);
+                        return;
+                    }
+                        _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
+                    char* err=dlerror();
+                    if(err!=NULL){
+                        fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\nMaybe 'exthelp' will be successful\n", err);
+                        return;
+                    }
+                    helper();
+                }
+                return;
+            }
+            else{
+                printf("LMFS WorkStation 2022 - Work ToolBox - BUILTIN\n");
+                printf("    help <modules...>\n");
+                printf("LMFSWorkStation Builtin.\n");
+                return;
+            }
+        }
+        int FuncIndex=FindFunc(Arg.argv[0]);
+        if(FuncIndex!=-1){
+            type=Func[FuncIndex].type;
+            double result;
+            if(type!=-1){
+                int isusermode=CheckUserMode(Arg.argv[0]);
+                if(isusermode==1){
+                    fprintf(stderr, "\033[91;1mOperation denied\033[0m: This function may just for <Program internal run mode>\n");
+                    return;
+                }
+                if(isusermode==-1){
+                    fprintf(stderr, "\033[91;1mMode Checker Failed\033[0m: This function was registered with unknow execution type\n");
+                    return;
+                }
+                if(type==1){
+                    result=GetFunc(Arg.argv[0]).Func(Arg.argc, Arg.argv);
+                    if((int)result!=0){
+                        printf("Result=%lf\n", result);
+                    }
+                }
+                else if(type==2){
+                    GetFunc(Arg.argv[0]).PtrFunc(Arg);
+                }
+            }
+        }else{
+            char** newargv=(char**)malloc((Arg.argc+2)*sizeof(char*));
+            int _count=0;
+            newargv[0]="execext";
+            for(int i=0;i<Arg.argc;i++){
+                newargv[_count]=(char*)malloc(strlen(Arg.argv[i])+2);
+                memset(newargv[_count], 0, strlen(Arg.argv[i])+2);
+                strcpy(newargv[_count++], Arg.argv[i]);
+            }
+                ArgList newarg={_count, newargv};
+                GetFunc("execext").Func(newarg.argc, newarg.argv);
+                for(int i=1;i<_count;i++)
+                  free(newargv[i]);
+        }
     }
-    return 0;
+    _sync_main_part();
+    _sync_mod_main_part();
 }
 
 extern int InitLMFSWS(){
@@ -388,29 +422,22 @@ extern int InitLMFSWS(){
         return -1;
     }
     if(regist("cmdline")==-1) return -1;
-    status=LoadModule("version");
+    status=LoadModule("tools");
     if(status==-1){
         fprintf(stderr, "LMFS WorkStation has crashed\n");
         return -1;
     }
-    if(regist("version")==-1) return -1;
-    status=LoadModule("exit");
-    if(status==-1){
-        fprintf(stderr, "LMFS WorkStation has crashed\n");
-        return -1;
-    }
-    if(regist("exit")==-1) return -1;
+    if(regist("tools")==-1) return -1;
     status=LoadModule("register");
     if(status==-1){
         fprintf(stderr, "LMFS WorkStation has crashed\n");
         return -1;
     }
     if(regist("register")==-1) return -1;
-    RegisterManual("builtin_printloaded", 1, printloadedBLT, NULL);
     return 0;
 }
 
-void runNormallyFile(char* fp){
+extern void runNormallyFile(char* fp){
     FILE* _F=fopen(fp, "r");
     if(_F==NULL){
         fprintf(stderr, "\033[91;1mError\033[0m: Cannot open file: %s\n", fp);
@@ -441,7 +468,7 @@ void runNormallyFile(char* fp){
     if(InitLMFSWS()==-1) exit(1);
 }
 
-void CloseArgPool(){
+extern void CloseArgPool(){
     while(DefaultArgPool->next!=NULL){
         DefaultArgPool=DefaultArgPool->next;
     }

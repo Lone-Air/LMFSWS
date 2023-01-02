@@ -27,15 +27,18 @@ typedef struct FuncList{
     PtrFunction PtrFunc;
 }FuncList;
 
-struct Module{
+typedef struct Module{
     char* ModuleName;
     void* dlheader;
     _Function Init;
     _Function Close;
     FuncList* FL;
-};
+}Module;
 
-typedef struct Module Module;
+typedef struct ModuleList{
+    Module* _m;
+    unsigned int _mn;
+}ModuleList;
 
 extern Module* Modules;
 extern long int ModuleNum;
@@ -47,9 +50,13 @@ extern int LoadModule(const char*);
 
 extern int RemoveLoaded(const char*);
 
+extern void AddModuleInfo(Module);
+
 extern int CallModuleInit(const char*);
 extern void* GetPtrFunction(const char*, const char*);
 
 extern int CloseModules();
+extern int CloseModulesPart();
+
 
 #endif

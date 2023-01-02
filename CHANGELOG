@@ -1,0 +1,12 @@
+--- 1/2/2023
+ -- Version 1.6
+  + Module:   tools
+  - Modules:  version echo system
+  + Feature:  Memory/Functions memory pool synchronization
+  + Feature:  Use ';' as single-line command delimiter
+  + Commands: clear list_functions
+  - Command:  builtin_printloaded
+  * Changes:  Directory 'build' will be deleted when build.sh is starting running
+  *           The module 'register' no longer closes all parts of module pool (Use CloseModulesPart() instead)
+  *           exthelp() is automatically called when the module information cannot be found in basic_help (command 'help')
+  ! Warning:  This version won't be compatiable with the old version

@@ -13,6 +13,11 @@
 extern FuncList *Func;
 extern long int FuncNum;
 
+typedef struct FuncListArr{
+    FuncList* _Func;
+    unsigned long int _FuncNum;
+}FuncListArr;
+
 extern int FindFunc(const char*);
 
 extern int InitFuncPool();

@@ -1,3 +1,2 @@
 #! /usr/bin/LMFSWS
-import echo
 echo Hello world!

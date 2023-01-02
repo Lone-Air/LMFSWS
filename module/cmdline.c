@@ -18,7 +18,7 @@
 #define SAVETO(a, counter, c) a=(char*)realloc(a, counter+1); \
                               a[counter++]=c;\
 
-extern Array* parse(const char* s){
+extern ArrayList* parse(const char* s){
     size_t len=0;
     char** data=(char**)calloc(2, sizeof(char*));
     int count=0;
@@ -27,6 +27,10 @@ extern Array* parse(const char* s){
     int c;
     char* buf=(char*)calloc(2, sizeof(char));
     data[len]=(char*)calloc(2, sizeof(char));
+    Array** list=(Array**)calloc(2, sizeof(Array*));
+    unsigned int listlen=0;
+    char** new;
+    unsigned int newlen=0;
     while((ch=*(s++))!='\0'){
         if(ch==' '||ch=='\t'){
             if(strcmp(buf, "")!=0){
@@ -110,6 +114,31 @@ extern Array* parse(const char* s){
                 }
             }
             break;
+          case ';':
+            if(strcmp(buf, "")!=0){
+                data[len]=(char*)calloc(strlen(buf)+1, sizeof(char));
+                strcpy(data[len], buf);
+                buf=(char*)calloc(2, sizeof(char));
+                count=0;
+            }
+            new=(char**)calloc(2, sizeof(char*));
+            newlen=0;
+            for(int i=0;i<=len;i++){
+                if(strcmp(data[i], "")!=0||i==0){
+                    new=(char**)realloc(new, sizeof(char*)*(newlen+1));
+                    new[newlen]=(char*)calloc(strlen(data[i])+1, sizeof(char));
+                    strcpy(new[newlen++], data[i]);
+                }
+                if(i!=len)
+                  free(data[i]);
+            }
+            data=(char**)calloc(2, sizeof(char*));
+            len=0;
+            list=(Array**)realloc(list, sizeof(Array*)*(listlen+2));
+            list[listlen]=(Array*)calloc(1, sizeof(Array));
+            list[listlen]->length=newlen+1;
+            list[listlen++]->data=new;
+            break;
           default:
             SAVETO(buf, count, ch);
             break;
@@ -119,9 +148,8 @@ extern Array* parse(const char* s){
         data[len]=(char*)calloc(strlen(buf)+1, sizeof(char));
         strcpy(data[len], buf);
     }
-    Array result[1];
-    char** new=(char**)calloc(2, sizeof(char*));
-    long int newlen=0;
+    new=(char**)calloc(2, sizeof(char*));
+    newlen=0;
     for(int i=0;i<=len;i++){
         if(strcmp(data[i], "")!=0||i==0){
             new=(char**)realloc(new, sizeof(char*)*(newlen+1));
@@ -131,9 +159,13 @@ extern Array* parse(const char* s){
         if(i!=len)
           free(data[i]);
     }
-    result[0]=(Array){new, newlen+1};
-    Array* res=result;
-    return res;
+    list=(Array**)realloc(list, sizeof(Array*)*(listlen+2));
+    list[listlen]=(Array*)calloc(1, sizeof(Array));
+    list[listlen]->length=newlen+1;
+    list[listlen++]->data=new;
+    ArrayList* result=(ArrayList*)calloc(1, sizeof(ArrayList));
+    *result=(ArrayList){listlen, list};
+    return result;
 }
 
 int mod_init(){ return 0; }

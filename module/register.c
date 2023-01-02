@@ -25,11 +25,12 @@ int mod_helper(){
     printf("    printloaded\n");
     printf("    execext <command> [args...]\n");
     printf("    exthelp <modules...>\n");
+    printf("    list_functions\n");
     printf("LMFSWorkStation Built-in Command.\n");
 }
 
 int mod_close(){
-    CloseModules();
+    CloseModulesPart();
     CloseFuncPool();
     return 0;
 }
@@ -49,7 +50,7 @@ double exthelp(int argc, char* argv[]){
             }
             int index=FindModule(argv[i]);
             if(index==-1){
-                fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'. Please use 'printloaded' to see what loaded\n", argv[i]);
+                fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'. Please use 'printloaded' and 'builtin_printloaded' to see what loaded\n", argv[i]);
                 continue;
             }
             _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
@@ -131,10 +132,57 @@ double import(int argc, char* argv[]){
 }
 
 double printloaded(){
+    printf("Available modules:\n");
     for(int i=0;i<ModuleNum;i++){
-        printf("%s\n", Modules[i].ModuleName);
+        printf("%s ", Modules[i].ModuleName);
+    }
+    printf("\n");
+    return 0;
+}
+
+double listFuncs(){
+    printf("Available functions(*: Pointer functions, !: Not user functions):\n");
+    for(int i=0;i<FuncNum;i++){
+        if(Func[i].type==2||Func[i].type==1)
+          printf("%s\033[92m%s\033[0m ", Func[i].type==1?"":"*", Func[i].name);
+        else
+          printf("!%s\033[91m%s\033[0m ", Func[i].type==3?"":"*", Func[i].name);
+    }
+    printf("\n");
+    return 0;
+}
+
+double _sync(FuncList* _Func, int _FuncNum){
+    CloseFuncPool();
+    InitFuncPool();
+    for(int i=0; i<_FuncNum; i++){
+        RegisterManual(_Func[i].name, _Func[i].type, _Func[i].Func, _Func[i].PtrFunc);
+    }
+    FuncNum=_FuncNum;
+    return 0;
+}
+
+double _sync_mod(Module* _mds, int _ModN){
+    CloseModulesPart();
+    InitModulePool();
+    for(int i=0; i<_ModN; i++){
+        AddModuleInfo(_mds[i]);
     }
     return 0;
+}
+
+FuncListArr* _sync_main(){
+    FuncListArr* result=(FuncListArr*)calloc(1, sizeof(FuncListArr));
+    result->_Func=Func;
+    result->_FuncNum=FuncNum;
+    return result;
+}
+
+ModuleList* _sync_mod_main(){
+    ModuleList* result=(ModuleList*)calloc(1, sizeof(ModuleList));
+    result->_m=Modules;
+    result->_mn=ModuleNum;
+    return result;
 }
 
 int mod_init(){
@@ -144,8 +192,8 @@ int mod_init(){
         return 1;
     }
     return 0;
-
 }
+
 double NF(){ return -1; }
 
 FuncList Regist[]={
@@ -155,6 +203,11 @@ FuncList Regist[]={
       {"execext", 1, execext, NULL},
       {"exthelp", 1, exthelp, NULL},
       {"import", 1, import, NULL},
+      {"list_functions", 1, listFuncs, NULL},
+      {"sync", 4, _sync, NULL},
+      {"sync_main", 4, NF, (void*)_sync_main},
+      {"sync_mod", 4, _sync_mod, NULL},
+      {"sync_mod_main", 4, NF, (void*)_sync_mod_main},
       {NULL, -1, NF, NULL}
 };
 

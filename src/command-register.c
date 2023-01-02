@@ -73,8 +73,7 @@ extern int RegisterManual(char* name, int type, _Function func, PtrFunction ptrf
         int toend=0;
         char* newname;
         while(1){
-            newname=(char*)malloc(8+(strlen(Item.name))+2);
-            memset(newname, 0, 8+strlen(Item.name)+2);
+            newname=(char*)calloc(8+(strlen(Item.name))+2, sizeof(char));
             sprintf(newname, "%s%d", Item.name, toend++);
             if(FindFunc(newname)==-1){
                 printf("\033[95;1mWarning\033[0m: `%s' from module `%s' has the same name as another function so register renamed it to `%s'\n", Item.name, name, newname);
