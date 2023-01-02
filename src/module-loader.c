@@ -222,7 +222,6 @@ extern int CloseModules(){
 
 extern int CloseModulesPart(){
     for(int i=0;i<ModuleNum;i++){
-        dlclose(Modules[i].dlheader);
         free(Modules[i].ModuleName);
     }
     ModuleNum=0;
