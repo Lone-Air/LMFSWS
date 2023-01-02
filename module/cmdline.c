@@ -17,6 +17,9 @@
 
 #define SAVETO(a, counter, c) a=(char*)realloc(a, (counter+1)*sizeof(char)); \
                               a[counter++]=c;\
+                              temp=(char*)calloc(counter, sizeof(char));\
+                              strncpy(temp, a, counter);\
+                              a=temp;
 
 extern ArrayList* parse(const char* s){
     size_t len=0;
@@ -31,6 +34,7 @@ extern ArrayList* parse(const char* s){
     unsigned int listlen=0;
     char** new;
     unsigned int newlen=0;
+    char* temp;
     while((ch=*(s++))!='\0'){
         if(ch==' '||ch=='\t'){
             if(strcmp(buf, "")!=0){
@@ -38,7 +42,6 @@ extern ArrayList* parse(const char* s){
                 strncpy(data[len], buf, count);
                 data=(char**)realloc(data, (len+2)*sizeof(char*));
                 data[++len]=(char*)calloc(2, sizeof(char));
-                //memset(data[len], 0, 2);
                 buf=(char*)calloc(2, sizeof(char));
                 count=0;
             }
