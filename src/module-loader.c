@@ -46,7 +46,7 @@ extern int FindModule(const char* name){
 
 extern int InitModulePool(){
     ModuleNum=0;
-    Modules=(Module*)malloc((ModuleNum+1)*sizeof(Module));
+    Modules=(Module*)calloc(ModuleNum+2, sizeof(Module));
     if(Modules==NULL){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: Failed to allocate enough memories for the modules pool!\n");
         return -1;
