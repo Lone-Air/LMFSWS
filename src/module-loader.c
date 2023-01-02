@@ -15,9 +15,9 @@
 #ifdef __WIN32__
   #include <io.h>
   #define getcwd _getcwd
+#else
+  #include <unistd.h>
 #endif
-
-#include <unistd.h>
 
 Module* Modules;
 long int ModuleNum;
