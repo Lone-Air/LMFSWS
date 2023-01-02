@@ -54,7 +54,6 @@ int main(int argc, char* argv[]){
     }
     if(InitLMFSWS()==-1) return 1;
     PtrFunction input=GetFunc("input").PtrFunc;
-    PtrFunction parse=GetFunc("parse").PtrFunc;
     if(argc==1){
         while(1){
             const char* data=input("LMFSWorkStation> ");
