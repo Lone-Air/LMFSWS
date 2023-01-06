@@ -10,7 +10,7 @@ CP=cp
 CHMOD=chmod
 
 CC=gcc
-CFLAGS=-std=c11
+CFLAGS='-std=c11 -I../include'
 LIBS=-lreadline
 LDFLAGS=-pie
 SOFLAGS="-fPIC -shared"
@@ -133,16 +133,16 @@ function part_module(){
     run ${CP} ../module/*.mode modules
 
     ## Input - Required
-    run ${CC} ../module/Input.c -I../include ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS
+    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS
 
     ## Command Line - Required
-    run ${CC} ../module/cmdline.c -I../include ${SOFLAGS} -o modules/cmdline.so $CFLAGS
+    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS
 
     ## Extenal Modules User Mode Loader - Required
-    run ${CC} ../module/register.c command-register.c.o module-loader.c.o -I../include ${SOFLAGS} -o modules/register.so $CFLAGS
+    run ${CC} ../module/register.c command-register.c.o module-loader.c.o ${SOFLAGS} -o modules/register.so $CFLAGS
 
     ## Core commands - Required
-    run ${CC} ../module/tools.c -I../include ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS
+    run ${CC} ../module/tools.c ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS
 
 }
 
