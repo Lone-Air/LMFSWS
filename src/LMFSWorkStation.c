@@ -29,8 +29,25 @@ static double _get_version(int argc, char** argv){
 }
 
 static double run(int argc, char** argv){
+    char* _fn;
+    char* _fn1;
+    char* _home;
     for(int i=0;i<argc;i++){
-        runNormallyFile(argv[i]);
+        _fn=(char*)calloc(strlen(argv[i])+1, sizeof(char));
+        strcpy(_fn, argv[i]);
+        if(_fn[0]=='~'){
+            _fn++;
+            _home=getenv("HOME");
+            if(_home==NULL) _home="/home";
+            _fn1=(char*)calloc(strlen(_fn)+strlen(_home)+1, sizeof(char));
+            strcpy(_fn1, _home);
+            strcat(_fn1, _fn);
+            _fn--;
+            free(_fn);
+            _fn=_fn1;
+        }
+        runNormallyFile(_fn);
+        free(_fn1);
     }
     return 0;
 }

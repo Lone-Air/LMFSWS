@@ -1,3 +1,7 @@
+--- 1/6/2023
+ -- Version 1.6.1
+   + Feature: In the run function, ~ is interpreted as the content expressed by $HOME
+
 --- 1/2/2023
  -- Version 1.6
   + Module:   tools
