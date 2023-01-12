@@ -115,6 +115,7 @@ extern ArrayList* parse(const char* s){
             break;
           case ';':
             if(strcmp(buf, "")!=0){
+                SAVETO(buf, count, '\0'); // Without this line may cause may bugs on windows!!!
                 data[len]=(char*)calloc(strlen(buf)+2, sizeof(char));
                 strcpy(data[len], buf);
                 buf=(char*)calloc(2, sizeof(char));
@@ -144,6 +145,7 @@ extern ArrayList* parse(const char* s){
         }
     }
     if(strcmp(buf, "")!=0){
+        SAVETO(buf, count, '\0'); // Without this line may cause may bugs on windows!!!
         data[len]=(char*)calloc(strlen(buf)+2, sizeof(char));
         strcpy(data[len], buf);
     }
