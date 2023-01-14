@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 static double _run_command(int argc, char** argv){
     if(argc>=1)
@@ -31,6 +32,7 @@ static double _get_version(int argc, char** argv){
 static double run(int argc, char** argv){
     char* _fn;
     char* _fn1;
+    bool used_fn1=false;
     char* _home;
     for(int i=0;i<argc;i++){
         _fn=(char*)calloc(strlen(argv[i])+1, sizeof(char));
@@ -45,9 +47,10 @@ static double run(int argc, char** argv){
             _fn--;
             free(_fn);
             _fn=_fn1;
+            used_fn1=true;
         }
         runNormallyFile(_fn);
-        free(_fn1);
+        if(used_fn1) free(_fn1);
     }
     return 0;
 }

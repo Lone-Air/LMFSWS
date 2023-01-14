@@ -1,4 +1,8 @@
---- 1/12/2022
+--- 1/14/2023
+ -- Patch 1.6.1-2
+  - Fix: Segmentation fault when use -run or -runfiles
+
+--- 1/12/2023
  -- Patch 1.6.1-1
   - Test: Add [ SAVETO(buf, count, '\0'); ]. Try fixing bugs on windows
 

@@ -448,6 +448,7 @@ extern void runNormallyFile(char* fp){
     int ch;
     while((ch=fgetc(_F))!=EOF){
         if(ch=='\n'){
+            buf[bufLen++]='\0';
             doLMFSWSCmd(buf);
             free(buf);
             buf=(char*)calloc(2, sizeof(char));
@@ -456,6 +457,13 @@ extern void runNormallyFile(char* fp){
         }
         buf=(char*)realloc(buf, sizeof(char)*(bufLen+2));
         buf[bufLen++]=ch;
+    }
+    if(strcmp(buf, "")!=0){
+        buf[bufLen++]='\0';
+        doLMFSWSCmd(buf);
+        free(buf);
+        buf=(char*)calloc(2, sizeof(char));
+        bufLen=0;
     }
     fclose(_F);
     CloseModules();
