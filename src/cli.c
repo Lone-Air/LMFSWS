@@ -101,6 +101,8 @@ static ArgWithAl decompose(char* s){
         switch(ch){
           case '=':
             if(!nameSaved){
+                buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
+                buf[bufLen++]='\0';
                 name=(char*)calloc(strlen(buf)+1, sizeof(char));
                 strcpy(name, buf);
                 nameSaved=true;
@@ -108,13 +110,15 @@ static ArgWithAl decompose(char* s){
                 buf=(char*)calloc(1, sizeof(char));
                 bufLen=0;
             }else{
-                buf=(char*)realloc(buf, sizeof(char)*(bufLen+2));
+                buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
                 buf[bufLen++]=ch;
             }
             break;
           case ',':
             if(nameSaved){
-                argl=(char**)realloc(argl, sizeof(char*)*(arglLen+2));
+                argl=(char**)realloc(argl, sizeof(char*)*(arglLen+1));
+                buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
+                buf[bufLen++]=ch;
                 argl[arglLen]=(char*)calloc(strlen(buf)+1, sizeof(char));
                 strcpy(argl[arglLen++], buf);
                 free(buf);
@@ -122,18 +126,20 @@ static ArgWithAl decompose(char* s){
                 bufLen=0;
             }
             else{
-                buf=(char*)realloc(buf, sizeof(char)*(bufLen+2));
+                buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
                 buf[bufLen++]=ch;
             }
             break;
           default:
-            buf=(char*)realloc(buf, sizeof(char)*(bufLen+2));
+            buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
             buf[bufLen++]=ch;
             break;
         }
     }
     if(strlen(buf)>0){
         if(!nameSaved){
+            buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
+            buf[bufLen++]=ch;
             name=(char*)calloc(strlen(buf)+1, sizeof(char));
             nameSaved=true;
             free(buf);
@@ -141,6 +147,8 @@ static ArgWithAl decompose(char* s){
             bufLen=0;
         }
         else{
+            buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
+            buf[bufLen++]=ch;
             argl=(char**)realloc(argl, sizeof(char*)*(arglLen+2));
             argl[arglLen]=(char*)calloc(strlen(buf)+1, sizeof(char));
             strcpy(argl[arglLen++], buf);
