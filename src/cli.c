@@ -118,6 +118,8 @@ static ArgWithAl decompose(char* s){
             if(nameSaved){
                 argl=(char**)realloc(argl, sizeof(char*)*(arglLen+1));
                 buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
+                buf[bufLen++]='\0';
+                buf=(char*)realloc(buf, sizeof(char)*(bufLen+1));
                 buf[bufLen++]=ch;
                 argl[arglLen]=(char*)calloc(strlen(buf)+1, sizeof(char));
                 strcpy(argl[arglLen++], buf);
