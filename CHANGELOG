@@ -1,3 +1,8 @@
+--- 1/15/2023
+ -- Version 1.6.2
+  + Feature: Readline support can be added to -no-readline in the compilation script (build.sh)
+  * Changes: Makes typing without gnu-readline more comfortable
+
 --- 1/14/2023
  -- Patch 1.6.1-2
   - Fix: Segmentation fault when use -run or -runfiles

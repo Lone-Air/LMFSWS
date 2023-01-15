@@ -16,9 +16,5 @@
 
 #define MODULE PREFIX MODNAME
 
-#ifndef __WIN32__
-#define HAVE_READLINE
-#endif
-
 #endif
 

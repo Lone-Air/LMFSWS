@@ -34,15 +34,22 @@ int mod_helper(){
 char* input(const char* prompt){
     char* res;
 #ifndef HAVE_READLINE
+    int _c=0;
+    int ch=0;
     printf("%s", prompt);
     res=(char*)calloc(2, sizeof(char*));
-    char ch;
     while(1){
         ch=getchar();
         if(ch=='\n'||ch=='\0') break;
-        res=(char*)realloc(res, strlen(res)+1);
-        res[strlen(res)]=ch;
+        if(ch==EOF){
+            putchar(10);
+            return NULL;
+        }
+        res=(char*)realloc(res, ++_c);
+        res[_c-1]=ch;
     }
+    res=(char*)realloc(res, ++_c);
+    res[_c-1]='\0';
 #else
     res=readline(prompt);
     if(res&&*res) add_history(res);

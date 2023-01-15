@@ -10,8 +10,8 @@ CP=cp
 CHMOD=chmod
 
 CC=gcc
-CFLAGS='-std=c11 -I../include'
-LIBS=-lreadline
+CFLAGS='-std=c11 -I../include -O3'
+LIBS="-DHAVE_READLINE -lreadline"
 LDFLAGS=-pie
 SOFLAGS="-fPIC -shared"
 
@@ -23,14 +23,15 @@ function _help(){
     echo "LMFS WorkStation Complation Script - 2022
     Usage: build.sh [options...]
     Options:
-       -default    Enable all
-       -main       Enable main part
-       -module     Enable modules part
-       -install    Enable automatic install
-       -debug      Append '-ggdb3' to \$CFLAGS
-       -windows    Delete compiler-flag '-fPIC'
-       -version    Show version of the cloned LMFSWS source
-       -help       Show this message
+       -default        Enable all
+       -main           Enable main part
+       -module         Enable modules part
+       -install        Enable automatic install
+       -debug          Append '-ggdb3' to \$CFLAGS
+       -windows        Delete compiler-flag '-fPIC'
+       -no-readline    Without GNU-Readline supports
+       -version        Show version of the cloned LMFSWS source
+       -help           Show this message
     "
 }
 
@@ -61,6 +62,8 @@ function _start(){
             CFLAGS="$CFLAGS -ggdb3"
         elif [ "$i" = "-version" ]; then
             cat VERSION
+        elif [ "$i" = "-no-readline" ]; then
+            LIBS=
         elif [ "$i" = "-windows" ]; then
             SOFLAGS=${SOFLAGS:5}
         elif [ "$i" = "-help" ]; then
