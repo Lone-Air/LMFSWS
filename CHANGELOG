@@ -1,3 +1,7 @@
+--- 1/21/2023
+ -- Patch 1.6.2-1
+  - Fix: Fixed a fatal bug when use -run
+
 --- 1/15/2023
  -- Version 1.6.2
   + Feature: Readline support can be added to -no-readline in the compilation script (build.sh)
