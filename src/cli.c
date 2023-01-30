@@ -329,7 +329,7 @@ extern void doLMFSWSCmd(const char* data){
         Array* Args=cmds->l[inter];
         ArgList Arg;
         int type;
-        if(Args[0].length<1||strcmp(Args[0].data[0], "")==0) return;
+        if(Args[0].length<1||strcmp(Args[0].data[0], "")==0) continue;
         if(Args[0].data[0][0]=='#') return;
         Arg.argc=Args[0].length-1;
         Arg.argv=Args[0].data;

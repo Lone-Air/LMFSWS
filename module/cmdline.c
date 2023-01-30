@@ -118,6 +118,7 @@ extern ArrayList* parse(const char* s){
                 SAVETO(buf, count, '\0'); // Without this line may cause may bugs on windows!!!
                 data[len]=(char*)calloc(strlen(buf)+2, sizeof(char));
                 strcpy(data[len], buf);
+                free(buf);
                 buf=(char*)calloc(2, sizeof(char));
                 count=0;
             }
@@ -134,6 +135,7 @@ extern ArrayList* parse(const char* s){
             }
             data=(char**)calloc(2, sizeof(char*));
             len=0;
+            data[len]=(char*)calloc(1, sizeof(char));
             list=(Array**)realloc(list, sizeof(Array*)*(listlen+2));
             list[listlen]=(Array*)calloc(1, sizeof(Array));
             list[listlen]->length=newlen+1;

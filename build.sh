@@ -10,7 +10,8 @@ CP=cp
 CHMOD=chmod
 
 CC=gcc
-CFLAGS='-std=c11 -I../include -O3'
+CFLAGS='-std=c11 -I../include '
+OPT="-O3"
 LIBS="-DHAVE_READLINE -lreadline"
 LDFLAGS=-pie
 SOFLAGS="-fPIC -shared"
@@ -30,6 +31,7 @@ function _help(){
        -debug          Append '-ggdb3' to \$CFLAGS
        -windows        Delete compiler-flag '-fPIC'
        -no-readline    Without GNU-Readline supports
+       -no-optimize    Without compiler optimize
        -version        Show version of the cloned LMFSWS source
        -help           Show this message
     "
@@ -64,6 +66,8 @@ function _start(){
             cat VERSION
         elif [ "$i" = "-no-readline" ]; then
             LIBS=
+        elif [ "$i" = "-no-optimize" ]; then
+            OPT=""
         elif [ "$i" = "-windows" ]; then
             SOFLAGS=${SOFLAGS:5}
         elif [ "$i" = "-help" ]; then
@@ -73,6 +77,8 @@ function _start(){
             _help
         fi
     done
+
+    CFLAGS="$CFLAGS $OPT"
 
     if [ "$main" = "yes" ]; then
         part_main

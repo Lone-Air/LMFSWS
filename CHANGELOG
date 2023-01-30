@@ -1,3 +1,8 @@
+--- 1/31/2023
+ -- Version 1.6.3
+  - Fix: Segmentation fault when there's only ';' in <user input>
+  - Fix: Fix the problem of ignoring all instructions following an empty instruction
+
 --- 1/21/2023
  -- Patch 1.6.2-1
   - Fix: Fixed a fatal bug when use -run
