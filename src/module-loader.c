@@ -112,6 +112,8 @@ extern int LoadModule(const char* mod_name){
         dlh=dlopen(SYSPATH, strcmp(cache, "LAZY")==0?RTLD_LAZY:RTLD_NOW);
     }
 
+    free(cache);
+
     if(!dlh){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: %s\n", dlerror());
         err=1;
@@ -122,7 +124,6 @@ extern int LoadModule(const char* mod_name){
     ER=dlerror();
     if(ER!=NULL){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: CANNOT LOAD initalize function, Reason:\n%s\n", ER);
-        int err=1;
         goto finish;
     }
 
@@ -130,7 +131,6 @@ extern int LoadModule(const char* mod_name){
     ER=dlerror();
     if(ER!=NULL){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: CANNOT LOAD regist list, Reason:\n%s\n", ER);
-        int err=1;
         goto finish;
     }
 
@@ -148,7 +148,6 @@ finish:
     free(name_so);
     free(SYSPATH);
     free(SYSMOD);
-    if(!err) free(cache);
     free(UNDERMOD);
     free(UNDERNAME);
 

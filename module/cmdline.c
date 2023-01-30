@@ -138,7 +138,8 @@ extern ArrayList* parse(const char* s){
             data[len]=(char*)calloc(1, sizeof(char));
             list=(Array**)realloc(list, sizeof(Array*)*(listlen+2));
             list[listlen]=(Array*)calloc(1, sizeof(Array));
-            list[listlen]->length=newlen+1;
+            if(newlen==0) newlen=1;
+            list[listlen]->length=newlen;
             list[listlen++]->data=new;
             break;
           default:
@@ -164,7 +165,8 @@ extern ArrayList* parse(const char* s){
     }
     list=(Array**)realloc(list, sizeof(Array*)*(listlen+3));
     list[listlen]=(Array*)calloc(2, sizeof(Array));
-    list[listlen]->length=newlen+1;
+    if(newlen==0) newlen=1;
+    list[listlen]->length=newlen;
     list[listlen++]->data=new;
     ArrayList* result=(ArrayList*)calloc(2, sizeof(ArrayList));
     *result=(ArrayList){listlen, list};
@@ -176,6 +178,7 @@ int mod_helper(){
     printf("LMFS WorkStation - Work ToolBox\n");
     printf("    parse <string>\n");
     printf("LMFSWorkStation Built-in. Don't Use it in a script!\n");
+    return 0;
 }
 
 double NF(){ return -1; }

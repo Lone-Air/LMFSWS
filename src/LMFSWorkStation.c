@@ -80,9 +80,10 @@ int main(int argc, char* argv[]){
     PtrFunction input=GetFunc("input").PtrFunc;
     if(argc==1){
         while(1){
-            const char* data=input("LMFSWorkStation> ");
+            char* data=input("LMFSWorkStation> ");
             if(data==NULL) break;
             doLMFSWSCmd(data);
+            free(data);
         }
     }
     else{

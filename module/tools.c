@@ -20,6 +20,7 @@ int mod_helper(){
     printf("    version\n");
     printf("    clear\n");
     printf("LMFSWorkStation Built-in command.\n");
+    return 0;
 }
 
 double echo(int argc, char* argv[]){
@@ -40,7 +41,7 @@ double _system(int argc, char* argv[]){
 int sToi(char* s){
     int ch;
     int result=0;
-    while(ch=*s++!=0){
+    while((ch=*(s++))!=0){
         if(ch>='0'&&ch<='9'){
             result=result*10+ch-48;
         }

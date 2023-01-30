@@ -210,6 +210,8 @@ extern void callArgs(int argc, char** argv){
                     break;
                 }
             }
+            for(int i=0; i<awitha.arg.argc; i++) free(awitha.arg.argv[i]);
+            free(awitha.arg.argv);
         }
         else{
             if(strlen(s)==1){
@@ -326,12 +328,18 @@ extern void doLMFSWSCmd(const char* data){
     PtrFunction parse=GetFunc("parse").PtrFunc;
     ArrayList* cmds=parse(data);
     for(int inter=0; inter<cmds->len; inter++){
+        if(inter!=0){
+            for(int j=0; j<cmds->l[inter-1]->length; j++){
+                free(cmds->l[inter-1]->data[j]);
+            }
+            free(cmds->l[inter-1]->data);
+        }
         Array* Args=cmds->l[inter];
         ArgList Arg;
         int type;
         if(Args[0].length<1||strcmp(Args[0].data[0], "")==0) continue;
         if(Args[0].data[0][0]=='#') return;
-        Arg.argc=Args[0].length-1;
+        Arg.argc=Args[0].length;
         Arg.argv=Args[0].data;
         if(strcmp(Arg.argv[0], "help")==0){
             if(Arg.argc>1){
@@ -408,10 +416,10 @@ extern void doLMFSWSCmd(const char* data){
                 memset(newargv[_count], 0, strlen(Arg.argv[i])+2);
                 strcpy(newargv[_count++], Arg.argv[i]);
             }
-                ArgList newarg={_count, newargv};
-                GetFunc("execext").Func(newarg.argc, newarg.argv);
-                for(int i=1;i<_count;i++)
-                  free(newargv[i]);
+            ArgList newarg={_count, newargv};
+            GetFunc("execext").Func(newarg.argc, newarg.argv);
+            for(int i=1;i<_count;i++)
+              free(newargv[i]);
         }
     }
     _sync_main_part();

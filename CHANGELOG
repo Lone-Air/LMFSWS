@@ -1,4 +1,8 @@
 --- 1/31/2023
+ -- Version: 1.6.4
+  * Optimize: Increase part of garbage collection to reduce memory usage
+
+--- 1/31/2023
  -- Version 1.6.3
   - Fix: Segmentation fault when there's only ';' in <user input>
   - Fix: Fix the problem of ignoring all instructions following an empty instruction

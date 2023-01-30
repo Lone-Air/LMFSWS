@@ -8,6 +8,7 @@
 #define LMFSWS_CLI_H
 
 #include "module-loader.h"
+#include <stdbool.h>
 
 typedef struct Argument{
     char flagShort;

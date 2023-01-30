@@ -27,6 +27,7 @@ int mod_helper(){
     printf("    exthelp <modules...>\n");
     printf("    list_functions\n");
     printf("LMFSWorkStation Built-in Command.\n");
+    return 0;
 }
 
 int mod_close(){

@@ -10,7 +10,7 @@ CP=cp
 CHMOD=chmod
 
 CC=gcc
-CFLAGS='-std=c11 -I../include '
+CFLAGS='-std=c11 -I../include -Wall'
 OPT="-O3"
 LIBS="-DHAVE_READLINE -lreadline"
 LDFLAGS=-pie
