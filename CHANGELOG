@@ -1,3 +1,8 @@
+--- 2/3/2023
+ -- Version: 1.6.5
+  * Changes: echo's last argument no longer adds a white space character at the end (tools.c)
+  - Fix: Fix \ escape character swallow issue
+
 --- 1/31/2023
  -- Version: 1.6.4
   * Optimize: Increase part of garbage collection to reduce memory usage

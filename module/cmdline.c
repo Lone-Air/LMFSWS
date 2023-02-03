@@ -24,7 +24,7 @@ extern ArrayList* parse(const char* s){
     int count=0;
     int ch;
     int str;
-    int c;
+    int c=0;
     char* buf=(char*)calloc(1, sizeof(char));
     data[len]=(char*)calloc(1, sizeof(char));
     Array** list=(Array**)calloc(1, sizeof(Array*));
@@ -80,7 +80,7 @@ extern ArrayList* parse(const char* s){
                       case '8': case '9':
                         c=ch-48;
                         ch=*(s++);
-                        if(ch=='\0'){
+                        if(ch=='\0'||'0'>ch||'9'<ch){
                             SAVETO(buf, count, c);
                             break;
                         }
@@ -90,8 +90,9 @@ extern ArrayList* parse(const char* s){
                           case '8': case '9':
                             c=c*10+ch-48;
                             ch=*(s++);
-                            if(ch=='\0'){
+                            if(ch=='\0'||'0'>ch||'9'<ch){
                                 SAVETO(buf, count, c);
+                                ch=*(--s);
                                 break;
                             }
                             switch(ch){
@@ -100,6 +101,7 @@ extern ArrayList* parse(const char* s){
                               case '8': case '9':
                                 c=c*10+ch-48;
                                 SAVETO(buf, count, c);
+                                ch=*(--s);
                                 break;
                             };
                             break;
