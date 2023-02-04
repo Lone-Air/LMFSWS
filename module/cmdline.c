@@ -82,6 +82,7 @@ extern ArrayList* parse(const char* s){
                         ch=*(s++);
                         if(ch=='\0'||'0'>ch||'9'<ch){
                             SAVETO(buf, count, c);
+                            ch=*(--s);
                             break;
                         }
                         switch(ch){
@@ -101,7 +102,6 @@ extern ArrayList* parse(const char* s){
                               case '8': case '9':
                                 c=c*10+ch-48;
                                 SAVETO(buf, count, c);
-                                ch=*(--s);
                                 break;
                             };
                             break;

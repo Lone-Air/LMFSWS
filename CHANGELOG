@@ -1,10 +1,14 @@
+--- 2/5/2023
+ -- Patch 1.6.5-1
+  - Fix: a bug in cmdline.c was like the bug 1.6.5 fixed
+
 --- 2/3/2023
- -- Version: 1.6.5
+ -- Version 1.6.5
   * Changes: echo's last argument no longer adds a white space character at the end (tools.c)
   - Fix: Fix \ escape character swallow issue
 
 --- 1/31/2023
- -- Version: 1.6.4
+ -- Version 1.6.4
   * Optimize: Increase part of garbage collection to reduce memory usage
 
 --- 1/31/2023
