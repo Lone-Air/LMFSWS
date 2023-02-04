@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define SAVETO(a, counter, c) a=(char*)realloc(a, (counter+1)*sizeof(char)); \
                               a[counter++]=c;\
@@ -31,6 +32,7 @@ extern ArrayList* parse(const char* s){
     unsigned int listlen=0;
     char** new;
     unsigned int newlen=0;
+    bool endstr=false;
     while((ch=*(s++))!='\0'){
         if(ch==' '||ch=='\t'){
             if(strcmp(buf, "")!=0){
@@ -45,12 +47,17 @@ extern ArrayList* parse(const char* s){
         }
         switch(ch){
           case '"': case '\'':
+            endstr=false;
             str=ch;
             while(ch!='\0'){
+                if(endstr) break;
                 ch=*(s++);
                 switch(ch){
                   case '"': case '\'':
-                    if(ch==str) break;
+                    if(ch==str){
+                        endstr=true;
+                        break;
+                    }
                     SAVETO(buf, count, ch);
                     break;
                   case '\\':
