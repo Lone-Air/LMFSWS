@@ -45,17 +45,27 @@ int sToi(char* s){
         if(ch>='0'&&ch<='9'){
             result=result*10+ch-48;
         }
+        else{
+            fprintf(stderr, "\033[91;1mError\033[0m: Not an legal integer number!\n");
+            return -1;
+        }
     }
     return result;
 }
 
-double _exit(int argc, char* argv[]){
+double _lmfsws_exit(int argc, char* argv[]){
+    int exitcode=-1;
     if(argc==1)
       exit(0);
-    else if(argc==2)
-      exit(sToi(argv[1]));
-    else
-      fprintf(stderr,"\033[91;1mError\033[0m: required an argument, but %d was given.\n", argc);
+    else if(argc==2){
+        exitcode=sToi(argv[1]);
+        if(exitcode!=-1) exit(exitcode);
+        else return -1;
+    }
+    else{
+        fprintf(stderr,"\033[91;1mError\033[0m: required an argument, but %d %s given.\n", argc, argc<2?"was":"were");
+        return -1;
+    }
     return 0;
 }
 
@@ -77,7 +87,7 @@ double NF(){ return -1; }
 FuncList Regist[]={
       {"echo", 1, echo, NULL},
       {"system", 1, _system, NULL},
-      {"exit", 1, _exit, NULL},
+      {"exit", 1, _lmfsws_exit, NULL},
       {"version", 1, version, NULL},
       {"clear", 1, _clear, NULL},
       {NULL, -1, NF, NULL}

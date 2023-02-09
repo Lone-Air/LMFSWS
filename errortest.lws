@@ -1,0 +1,4 @@
+#! /usr/bin/LMFSWS
+echo "Test"
+this is an undefined function
+echo "1"

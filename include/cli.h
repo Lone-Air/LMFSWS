@@ -37,6 +37,7 @@ typedef struct ArgWithAl{
 }ArgWithAl;
 
 extern char** EMPTY_LIST;
+extern void* result_p;
 
 extern ArgumentsList* DefaultArgPool;
 extern ArgumentsList* DefaultArgPoolHead;
@@ -49,13 +50,15 @@ extern Argument GetArgbyShortFlag(char);
 extern void callArgs(int argc, char** argv);
 extern double callArgFunc(Argument, ArgList);
 
-extern void doLMFSWSCmd(const char*);
+extern double doLMFSWSCmd(const char*);
 
-extern void runNormallyFile(char*);
+extern int runNormallyFile(char*);
 
 extern void CloseArgPool();
 
 extern int InitLMFSWS();
+
+extern void* get_result();
 
 #endif
 

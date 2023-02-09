@@ -35,6 +35,7 @@ static double run(int argc, char** argv){
     bool used_fn1;
     used_fn1=false;
     char* _home;
+    int status=0;
     for(int i=0;i<argc;i++){
         _fn=(char*)calloc(strlen(argv[i])+1, sizeof(char));
         strcpy(_fn, argv[i]);
@@ -50,7 +51,10 @@ static double run(int argc, char** argv){
             _fn=_fn1;
             used_fn1=true;
         }
-        runNormallyFile(_fn);
+        status=runNormallyFile(_fn);
+        if(status==-1){
+            fprintf(stderr, "\033[91;1mError\033[0m: Error happened while running\n");
+        }
         if(used_fn1){
             free(_fn1);
             used_fn1=false;

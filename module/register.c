@@ -52,19 +52,21 @@ double exthelp(int argc, char* argv[]){
             int index=FindModule(argv[i]);
             if(index==-1){
                 fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'. Please use 'printloaded' and 'builtin_printloaded' to see what loaded\n", argv[i]);
-                continue;
+                return -1;
             }
             _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
             char* err=dlerror();
             if(err!=NULL){
                 fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\nPlease check module status\n", err);
-                continue;
+                return -1;
             }
             helper();
         }
     }
     return 0;
 }
+
+void* p_result;
 
 double execext(int argc, char* argv[]){
     ArgList new;
@@ -77,8 +79,13 @@ double execext(int argc, char* argv[]){
     new.argc=argc-1;
     new.argv=arg;
     int type;
-    double result;
-    type=getType(arg[0]);
+    double result=0;
+    int FuncIndex=FindFunc(arg[0]);
+    type=Func[FuncIndex].type;
+    if(FuncIndex==-1){
+        fprintf(stderr, "\033[91;1mError\033[0m: No function named '%s'\n", arg[0]);
+        return -1;
+    }
     if(type!=-1){
         int isusermode=CheckUserMode(arg[0]);
         if(isusermode==1){
@@ -94,18 +101,19 @@ double execext(int argc, char* argv[]){
             if((int)result!=0){
                 printf("Result=%lf\n", result);
             }
+            return result;
         }else if(type==2){
-            GetFunc(arg[0]).PtrFunc(new);
+            p_result=GetFunc(arg[0]).PtrFunc(new);
         }
     }
-    return 0;
+    return result;
 }
 
 double include(int argc, char* argv[]){
     for(int i=1;i<argc;i++){
         if(strcmp(argv[i], "register")==0){
             fprintf(stderr, "\033[91;1mError\033[0m: You can't include 'register' itself!\n");
-            continue;
+            return -1;
         }
         LoadModule(argv[i]);
     };
@@ -123,7 +131,7 @@ double import(int argc, char* argv[]){
     for(int i=1;i<argc;i++){
         if(strcmp(argv[i], "register")==0){
             fprintf(stderr, "\033[91;1mError\033[0m: You can't include 'register' itself!\n");
-            continue;
+            return -1;
         }
         if(LoadModule(argv[i])!=-1){
             regist(argv[i]);
@@ -186,6 +194,10 @@ ModuleList* _sync_mod_main(){
     return result;
 }
 
+void* _sync_result_p(){
+    return p_result;
+}
+
 int mod_init(){
     if(InitModulePool()!=1) return -1;
     if(InitFuncPool()!=0){
@@ -209,6 +221,7 @@ FuncList Regist[]={
       {"sync_main", 4, NF, (void*)_sync_main},
       {"sync_mod", 4, _sync_mod, NULL},
       {"sync_mod_main", 4, NF, (void*)_sync_mod_main},
+      {"sync_result", 4, NF, _sync_result_p},
       {NULL, -1, NF, NULL}
 };
 

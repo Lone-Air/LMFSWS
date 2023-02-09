@@ -14,6 +14,7 @@
 #include <stdbool.h>
 
 char** EMPTY_LIST={0};
+void* result_p;
 
 ArgumentsList* DefaultArgPool;
 ArgumentsList* DefaultArgPoolHead;
@@ -322,11 +323,18 @@ static void _sync_mod_main_part(){
     }
 }
 
-extern void doLMFSWSCmd(const char* data){
+static void sync_result_p(){
+    PtrFunction _sync_r_p_mm=GetFunc("sync_result").PtrFunc;
+    result_p=_sync_r_p_mm();
+}
+
+extern double doLMFSWSCmd(const char* data){
     GetFunc("sync").Func(Func, FuncNum);
     GetFunc("sync_mod").Func(Modules, ModuleNum);
     PtrFunction parse=GetFunc("parse").PtrFunc;
     ArrayList* cmds=parse(data);
+    double result=0;
+    bool ptr=false;
     for(int inter=0; inter<cmds->len; inter++){
         if(inter!=0){
             for(int j=0; j<cmds->l[inter-1]->length; j++){
@@ -338,7 +346,7 @@ extern void doLMFSWSCmd(const char* data){
         ArgList Arg;
         int type;
         if(Args[0].length<1||strcmp(Args[0].data[0], "")==0) continue;
-        if(Args[0].data[0][0]=='#') return;
+        if(Args[0].data[0][0]=='#') return 0;
         Arg.argc=Args[0].length;
         Arg.argv=Args[0].data;
         if(strcmp(Arg.argv[0], "help")==0){
@@ -348,7 +356,7 @@ extern void doLMFSWSCmd(const char* data){
                         printf("LMFS WorkStation - Work ToolBox - BUILTIN\n");
                         printf("    help <modules...>\n");
                         printf("LMFSWorkStation Builtin.\n");
-                        return;
+                        continue;
                     }
                     int index=FindModule(Arg.argv[i]);
                     if(index==-1){
@@ -361,41 +369,43 @@ extern void doLMFSWSCmd(const char* data){
                             strcpy(newargv_[count++], Arg.argv[i]);
                         }
                         ArgList newarg_={count, newargv_};
-                        GetFunc("exthelp").Func(newarg_.argc, newarg_.argv);
+                        result=GetFunc("exthelp").Func(newarg_.argc, newarg_.argv);
                         for(int i=1;i<count;i++)
                           free(newargv_[i]);
-                        return;
                     }
                         _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
                     char* err=dlerror();
                     if(err!=NULL){
                         fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\nMaybe 'exthelp' will be successful\n", err);
-                        return;
+                        return -1;
                     }
                     helper();
                 }
-                return;
+                return 0;
             }
             else{
                 printf("LMFS WorkStation 2022 - Work ToolBox - BUILTIN\n");
                 printf("    help <modules...>\n");
                 printf("LMFSWorkStation Builtin.\n");
-                return;
+                return 0;
             }
         }
         int FuncIndex=FindFunc(Arg.argv[0]);
+        if(FuncIndex==-1){
+            fprintf(stderr, "\033[91;1mError\033[0m: No function named '%s'\n", Arg.argv[0]);
+            return -1;
+        }
         if(FuncIndex!=-1){
             type=Func[FuncIndex].type;
-            double result;
             if(type!=-1){
                 int isusermode=CheckUserMode(Arg.argv[0]);
                 if(isusermode==1){
                     fprintf(stderr, "\033[91;1mOperation denied\033[0m: This function may just for <Program internal run mode>\n");
-                    return;
+                    return -1;
                 }
                 if(isusermode==-1){
                     fprintf(stderr, "\033[91;1mMode Checker Failed\033[0m: This function was registered with unknow execution type\n");
-                    return;
+                    return -1;
                 }
                 if(type==1){
                     result=GetFunc(Arg.argv[0]).Func(Arg.argc, Arg.argv);
@@ -404,7 +414,8 @@ extern void doLMFSWSCmd(const char* data){
                     }
                 }
                 else if(type==2){
-                    GetFunc(Arg.argv[0]).PtrFunc(Arg);
+                    result_p=GetFunc(Arg.argv[0]).PtrFunc(Arg);
+                    ptr=true;
                 }
             }
         }else{
@@ -417,13 +428,15 @@ extern void doLMFSWSCmd(const char* data){
                 strcpy(newargv[_count++], Arg.argv[i]);
             }
             ArgList newarg={_count, newargv};
-            GetFunc("execext").Func(newarg.argc, newarg.argv);
+            result=GetFunc("execext").Func(newarg.argc, newarg.argv);
             for(int i=1;i<_count;i++)
               free(newargv[i]);
         }
     }
     _sync_main_part();
     _sync_mod_main_part();
+    if(!ptr) sync_result_p();
+    return result;
 }
 
 extern int InitLMFSWS(){
@@ -455,22 +468,24 @@ extern int InitLMFSWS(){
     return 0;
 }
 
-extern void runNormallyFile(char* fp){
+extern int runNormallyFile(char* fp){
     FILE* _F=fopen(fp, "r");
     if(_F==NULL){
         fprintf(stderr, "\033[91;1mError\033[0m: Cannot open file: %s\n", fp);
-        return;
+        return -1;
     }
     char* buf=(char*)calloc(2, sizeof(char));
     unsigned int bufLen=0;
     int ch;
+    int status;
     while((ch=fgetc(_F))!=EOF){
         if(ch=='\n'){
             buf[bufLen++]='\0';
-            doLMFSWSCmd(buf);
+            status=doLMFSWSCmd(buf);
             free(buf);
             buf=(char*)calloc(2, sizeof(char));
             bufLen=0;
+            if(status==-1) return -1;
             continue;
         }
         buf=(char*)realloc(buf, sizeof(char)*(bufLen+2));
@@ -478,10 +493,11 @@ extern void runNormallyFile(char* fp){
     }
     if(strcmp(buf, "")!=0){
         buf[bufLen++]='\0';
-        doLMFSWSCmd(buf);
+        status=doLMFSWSCmd(buf);
         free(buf);
         buf=(char*)calloc(2, sizeof(char));
         bufLen=0;
+        if(status==-1) return -1;
     }
     fclose(_F);
     CloseModules();
@@ -492,6 +508,7 @@ extern void runNormallyFile(char* fp){
         exit(1);
     }
     if(InitLMFSWS()==-1) exit(1);
+    return 0;
 }
 
 extern void CloseArgPool(){
@@ -506,5 +523,9 @@ extern void CloseArgPool(){
             free(DefaultArgPool->next);
         }
     }
+}
+
+extern void* get_result(){
+    return result_p;
 }
 
