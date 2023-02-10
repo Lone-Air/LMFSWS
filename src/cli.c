@@ -93,7 +93,7 @@ static bool check_including(char* s1, char c){
 static ArgWithAl decompose(char* s){
     char* buf=(char*)calloc(1, sizeof(char));
     unsigned int bufLen=0;
-    char* name;
+    char* name={0};
     bool nameSaved=false;
     char** argl=(char**)calloc(1, sizeof(char*));
     unsigned int arglLen=0;

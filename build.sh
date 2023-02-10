@@ -15,6 +15,7 @@ OPT="-O3"
 LIBS="-DHAVE_READLINE -lreadline"
 LDFLAGS="-pie -fPIE"
 SOFLAGS="-shared"
+MODULE_EXTRA_FLAGS=""
 
 OBJECT=LMFSWS
 
@@ -35,6 +36,7 @@ function _help(){
        -clang          Use Clang instead of GCC
        -version        Show version of the cloned LMFSWS source
        -no-pie         Build ELF EXEC Object for LMFSWS not ELF PIE-EXEC Object
+       -strip          Automatic strip
        -help           Show this message
     "
 }
@@ -74,6 +76,9 @@ function _start(){
             CC="clang"
         elif [ "$i" = "-no-pie" ]; then
             LDFLAGS="-no-pie"
+        elif [ "$i" = "-strip" ]; then
+            LDFLAGS="$LDFLAGS -s"
+            MODULE_EXTRA_FLAGS="-s"
         elif [ "$i" = "-windows" ]; then
             SOFLAGS=${SOFLAGS:5}
         elif [ "$i" = "-help" ]; then
@@ -148,16 +153,16 @@ function part_module(){
     run ${CP} ../module/*.mode modules
 
     ## Input - Required
-    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS
+    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS $MODULE_EXTRA_FLAGS
 
     ## Command Line - Required
-    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS
+    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS $MODULE_EXTRA_FLAGS
 
     ## Extenal Modules User Mode Loader - Required
-    run ${CC} ../module/register.c command-register.c.o module-loader.c.o ${SOFLAGS} -o modules/register.so $CFLAGS
+    run ${CC} ../module/register.c command-register.c.o module-loader.c.o ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS
 
     ## Core commands - Required
-    run ${CC} ../module/tools.c ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS
+    run ${CC} ../module/tools.c ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS $MODULE_EXTRA_FLAGS
 
 }
 
