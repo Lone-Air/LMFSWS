@@ -10,11 +10,11 @@ CP=cp
 CHMOD=chmod
 
 CC=gcc
-CFLAGS='-std=c11 -I../include -Wall'
+CFLAGS='-std=c11 -I../include -Wall -Wno-deprecated-non-prototype -fPIC'
 OPT="-O3"
 LIBS="-DHAVE_READLINE -lreadline"
-LDFLAGS=-pie
-SOFLAGS="-fPIC -shared"
+LDFLAGS="-pie -fPIE"
+SOFLAGS="-shared"
 
 OBJECT=LMFSWS
 
@@ -32,7 +32,9 @@ function _help(){
        -windows        Delete compiler-flag '-fPIC'
        -no-readline    Without GNU-Readline supports
        -no-optimize    Without compiler optimize
+       -clang          Use Clang instead of GCC
        -version        Show version of the cloned LMFSWS source
+       -no-pie         Build ELF EXEC Object for LMFSWS not ELF PIE-EXEC Object
        -help           Show this message
     "
 }
@@ -68,6 +70,10 @@ function _start(){
             LIBS=
         elif [ "$i" = "-no-optimize" ]; then
             OPT=""
+        elif [ "$i" = "-clang" ]; then
+            CC="clang"
+        elif [ "$i" = "-no-pie" ]; then
+            LDFLAGS="-no-pie"
         elif [ "$i" = "-windows" ]; then
             SOFLAGS=${SOFLAGS:5}
         elif [ "$i" = "-help" ]; then
@@ -121,12 +127,12 @@ function part_main(){
     # MAIN
     tell 'for i in $FILES
 do
-    run ${CC} $CFLAGS -I.. ../src/$i -o $i.o -c $SOFLAGS
+    run ${CC} $CFLAGS -I.. ../src/$i -o $i.o -c
 done'
 
     for i in $FILES
     do
-        run ${CC} $CFLAGS -I.. ../src/$i -o $i.o -c $SOFLAGS
+        run ${CC} $CFLAGS -I.. ../src/$i -o $i.o -c
     done
 
     run ${CC} $LDFLAGS *.o -o ${OBJECT}

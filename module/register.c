@@ -51,7 +51,7 @@ double exthelp(int argc, char* argv[]){
             }
             int index=FindModule(argv[i]);
             if(index==-1){
-                fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'. Please use 'printloaded' and 'builtin_printloaded' to see what loaded\n", argv[i]);
+                fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'. Please use 'printloaded' to see what loaded\n", argv[i]);
                 return -1;
             }
             _Function helper=dlsym(Modules[index].dlheader, "mod_helper");

@@ -82,9 +82,10 @@ int main(int argc, char* argv[]){
     }
     if(InitLMFSWS()==-1) return 1;
     PtrFunction input=GetFunc("input").PtrFunc;
+    char* data;
     if(argc==1){
         while(1){
-            char* data=input("LMFSWorkStation> ");
+            data=input("LMFSWorkStation> ");
             if(data==NULL) break;
             doLMFSWSCmd(data);
             free(data);

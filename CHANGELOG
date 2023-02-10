@@ -1,6 +1,15 @@
+--- 2/11/2023
+ -- Version 1.6.7
+  + Feature: Add some flags for build.sh
+  * Changes: Do some chabges in cli.c
+
+--- 2/10/2023
+ -- Version 1.6.6.2
+  * Changes: When exthelp failed with a message, help will stop working
+
 --- 2/10/2023
  -- Version 1.6.6.1
-  - Feature: Better import command
+  + Feature: Better import command
 
 --- 2/10/2023
  -- Version 1.6.6

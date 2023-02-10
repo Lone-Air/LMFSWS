@@ -297,7 +297,9 @@ extern void callArgs(int argc, char** argv){
 }
 
 extern double callArgFunc(Argument arg, ArgList al){
-    return arg.callf(al.argc, al.argv);
+    _Function argfunc=arg.callf;
+    double result=argfunc(al.argc, al.argv);
+    return result;
 }
 
 static void _sync_main_part(){
@@ -329,8 +331,11 @@ static void sync_result_p(){
 }
 
 extern double doLMFSWSCmd(const char* data){
-    GetFunc("sync").Func(Func, FuncNum);
-    GetFunc("sync_mod").Func(Modules, ModuleNum);
+    _Function temp;
+    temp=GetFunc("sync").Func;
+    temp(Func, FuncNum);
+    temp=GetFunc("sync_mod").Func;
+    temp(Modules, ModuleNum);
     PtrFunction parse=GetFunc("parse").PtrFunc;
     ArrayList* cmds=parse(data);
     double result=0;
@@ -370,6 +375,7 @@ extern double doLMFSWSCmd(const char* data){
                         }
                         ArgList newarg_={count, newargv_};
                         result=GetFunc("exthelp").Func(newarg_.argc, newarg_.argv);
+                        if(result==-1) return -1;
                         for(int i=1;i<count;i++)
                           free(newargv_[i]);
                     }
