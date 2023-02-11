@@ -10,7 +10,8 @@ CP=cp
 CHMOD=chmod
 
 CC=gcc
-CFLAGS='-std=c11 -I../include -Wall -Wno-deprecated-non-prototype -fPIC'
+CFLAGS='-std=c11 -I../include -Wall -Wno-deprecated-non-prototype'
+EXTRA_CFLAGS="-fPIC"
 OPT="-O3"
 LIBS="-DHAVE_READLINE -lreadline"
 LDFLAGS="-pie -fPIE"
@@ -80,7 +81,7 @@ function _start(){
             LDFLAGS="$LDFLAGS -s"
             MODULE_EXTRA_FLAGS="-s"
         elif [ "$i" = "-windows" ]; then
-            SOFLAGS=${SOFLAGS:5}
+            EXTRA_CFLAGS=""
         elif [ "$i" = "-help" ]; then
             _help
         else
@@ -132,12 +133,12 @@ function part_main(){
     # MAIN
     tell 'for i in $FILES
 do
-    run ${CC} $CFLAGS -I.. ../src/$i -o $i.o -c
+    run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c
 done'
 
     for i in $FILES
     do
-        run ${CC} $CFLAGS -I.. ../src/$i -o $i.o -c
+        run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c
     done
 
     run ${CC} $LDFLAGS *.o -o ${OBJECT}
@@ -153,16 +154,16 @@ function part_module(){
     run ${CP} ../module/*.mode modules
 
     ## Input - Required
-    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS $MODULE_EXTRA_FLAGS
+    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
 
     ## Command Line - Required
-    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS $MODULE_EXTRA_FLAGS
+    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
 
     ## Extenal Modules User Mode Loader - Required
-    run ${CC} ../module/register.c command-register.c.o module-loader.c.o ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS
+    run ${CC} ../module/register.c command-register.c.o module-loader.c.o ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
 
     ## Core commands - Required
-    run ${CC} ../module/tools.c ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS $MODULE_EXTRA_FLAGS
+    run ${CC} ../module/tools.c ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
 
 }
 
