@@ -125,6 +125,7 @@ function tell(){
 function part_main(){
     rm -rf build
     runNoEXIT mkdir build
+    run ${CP} LICENSE build
     run cd src
     FILES=$(ls *.c)
     run cd ..
@@ -175,9 +176,11 @@ function part_install(){
 
     runNoEXIT mkdir -p $PREFIX/lib/LMFSWSModules
     runNoEXIT mkdir -p $PREFIX/bin
+    runNoEXIT mkdir -p $PREFIX/share/licenses/LMFSWS
     run ${CP} modules/* $PREFIX/lib/LMFSWSModules
     run ${CP} ${OBJECT} $PREFIX/bin
     run ${CHMOD} 755 $PREFIX/bin/${OBJECT}
+    run ${CP} LICENSE $PREFIX/share/licenses/LMFSWS
 
     runNoEXIT mkdir $PREFIX/include/LMFSWS
     run ${CP} -rf ../include/* $PREFIX/include/LMFSWS

@@ -1,3 +1,8 @@
+--- 2/13/2023
+ -- Version 1.6.7.1
+  ! Modified: Use GPL v3 instead of GPL v2
+  + Feature: Install LICENSE to $PREFIX/share/licenses/LMFSWS
+
 --- 2/11/2023
  -- Version 1.6.7
   + Feature: Add some flags for build.sh
