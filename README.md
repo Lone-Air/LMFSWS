@@ -17,10 +17,16 @@ $ sudo ./build.sh
 ```
 #include <LMFSWS/command-register.h>
 #include <LMFSWS/module-loader.h>
+#include <LMFSWS/cli.h>
 #include <stdlib.h>
 
-int mod_init(){
-    /* Do something... */
+resultpShell* rpS;
+
+int mod_init(ModuleList* ModL_m, FuncListArr* FuncL_m, resultpShell* rpS_m){
+    ModL=ModL_m;
+    FuncL=FuncL_m;
+    rpS=rpS_m;
+    /* Do something else... */
     return 0; // If it successfully
 }
 

@@ -132,10 +132,10 @@ function part_main(){
     run cd build
 
     # MAIN
-    tell 'for i in $FILES
+    tell "for i in $FILES
 do
-    run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c
-done'
+    ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/"'$i'" -o "'$i'".o -c
+done"
 
     for i in $FILES
     do

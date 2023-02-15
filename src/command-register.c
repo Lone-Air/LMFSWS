@@ -11,8 +11,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-FuncList *Func;
-long int FuncNum;
+FuncListArr* FuncL;
+
+#undef Modules
+#undef ModuleNum
+#define Modules ModL->_m
+#define ModuleNum ModL->_mn
 
 extern int FindFunc(const char* name){
     for(int i=0;i<FuncNum;i++){
@@ -22,6 +26,7 @@ extern int FindFunc(const char* name){
 }
 
 extern int InitFuncPool(){
+    FuncL=(FuncListArr*)calloc(1, sizeof(FuncListArr));
     Func=(FuncList*)malloc(sizeof(FuncList)*1);
     if(Func==NULL){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot allocate enough memories for Function List Pool!\n");
@@ -130,6 +135,7 @@ extern FuncList GetFunc(const char* name){
 extern int CloseFuncPool(){
     free(Func);
     FuncNum=0;
+    free(FuncL);
     return 0;
 }
 

@@ -14,7 +14,9 @@
 #include <stdbool.h>
 
 char** EMPTY_LIST={0};
-void* result_p;
+void* res;
+
+resultpShell *rpS;
 
 ArgumentsList* DefaultArgPool;
 ArgumentsList* DefaultArgPoolHead;
@@ -302,44 +304,10 @@ extern double callArgFunc(Argument arg, ArgList al){
     return result;
 }
 
-static void _sync_main_part(){
-    PtrFunction _sync_m=GetFunc("sync_main").PtrFunc;
-    FuncListArr* _sm=_sync_m();
-    CloseFuncPool();
-    InitFuncPool();
-    for(int i=0; i<_sm->_FuncNum; i++){
-        RegisterManual(_sm->_Func[i].name, _sm->_Func[i].type, _sm->_Func[i].Func, _sm->_Func[i].PtrFunc);
-    }
-    FuncNum=_sm->_FuncNum;
-}
-
-static void _sync_mod_main_part(){
-    PtrFunction _sync_m_m=GetFunc("sync_mod_main").PtrFunc;
-    ModuleList* _smm=_sync_m_m();
-    Module* _mds=_smm->_m;
-    unsigned int _ModN=_smm->_mn;
-    CloseModulesPart();
-    InitModulePool();
-    for(int i=0; i<_ModN; i++){
-        AddModuleInfo(_mds[i]);
-    }
-}
-
-static void sync_result_p(){
-    PtrFunction _sync_r_p_mm=GetFunc("sync_result").PtrFunc;
-    result_p=_sync_r_p_mm();
-}
-
 extern double doLMFSWSCmd(const char* data){
-    _Function temp;
-    temp=GetFunc("sync").Func;
-    temp(Func, FuncNum);
-    temp=GetFunc("sync_mod").Func;
-    temp(Modules, ModuleNum);
     PtrFunction parse=GetFunc("parse").PtrFunc;
     ArrayList* cmds=parse(data);
     double result=0;
-    bool ptr=false;
     for(int inter=0; inter<cmds->len; inter++){
         if(inter!=0){
             for(int j=0; j<cmds->l[inter-1]->length; j++){
@@ -374,7 +342,7 @@ extern double doLMFSWSCmd(const char* data){
                             strcpy(newargv_[count++], Arg.argv[i]);
                         }
                         ArgList newarg_={count, newargv_};
-                        result=GetFunc("exthelp").Func(newarg_.argc, newarg_.argv);
+                        result=GetFunc("exthelp")._Func(newarg_.argc, newarg_.argv);
                         if(result==-1) return -1;
                         for(int i=1;i<count;i++)
                           free(newargv_[i]);
@@ -414,14 +382,13 @@ extern double doLMFSWSCmd(const char* data){
                     return -1;
                 }
                 if(type==1){
-                    result=GetFunc(Arg.argv[0]).Func(Arg.argc, Arg.argv);
+                    result=GetFunc(Arg.argv[0])._Func(Arg.argc, Arg.argv);
                     if((int)result!=0){
                         printf("Result=%lf\n", result);
                     }
                 }
                 else if(type==2){
-                    result_p=GetFunc(Arg.argv[0]).PtrFunc(Arg);
-                    ptr=true;
+                    rpS->resultp=GetFunc(Arg.argv[0]).PtrFunc(Arg);
                 }
             }
         }else{
@@ -434,18 +401,16 @@ extern double doLMFSWSCmd(const char* data){
                 strcpy(newargv[_count++], Arg.argv[i]);
             }
             ArgList newarg={_count, newargv};
-            result=GetFunc("execext").Func(newarg.argc, newarg.argv);
+            result=GetFunc("execext")._Func(newarg.argc, newarg.argv);
             for(int i=1;i<_count;i++)
               free(newargv[i]);
         }
     }
-    _sync_main_part();
-    _sync_mod_main_part();
-    if(!ptr) sync_result_p();
     return result;
 }
 
 extern int InitLMFSWS(){
+    rpS=(resultpShell*)calloc(1, sizeof(resultpShell));
     int status;
     status=LoadModule("Input");
     if(status==-1){

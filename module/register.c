@@ -9,13 +9,13 @@
 
 #include "command-register.h"
 #include "module-loader.h"
-
-
+#include "cli.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+resultpShell* rpS;
 
 int mod_helper(){
     printf("LMFS WorkStation - Work ToolBox - Core Command\n");
@@ -31,8 +31,6 @@ int mod_helper(){
 }
 
 int mod_close(){
-    CloseModulesPart();
-    CloseFuncPool();
     return 0;
 }
 
@@ -66,8 +64,6 @@ double exthelp(int argc, char* argv[]){
     return 0;
 }
 
-void* p_result;
-
 double execext(int argc, char* argv[]){
     ArgList new;
     int count=0;
@@ -97,13 +93,13 @@ double execext(int argc, char* argv[]){
             return -1;
         }
         if(type==1){
-            result=GetFunc(arg[0]).Func(new);
+            result=GetFunc(arg[0])._Func(new);
             if((int)result!=0){
                 printf("Result=%lf\n", result);
             }
             return result;
         }else if(type==2){
-            p_result=GetFunc(arg[0]).PtrFunc(new);
+            rpS->resultp=GetFunc(arg[0]).PtrFunc(new);
         }
     }
     return result;
@@ -161,49 +157,10 @@ double listFuncs(){
     return 0;
 }
 
-double _sync(FuncList* _Func, int _FuncNum){
-    CloseFuncPool();
-    InitFuncPool();
-    for(int i=0; i<_FuncNum; i++){
-        RegisterManual(_Func[i].name, _Func[i].type, _Func[i].Func, _Func[i].PtrFunc);
-    }
-    FuncNum=_FuncNum;
-    return 0;
-}
-
-double _sync_mod(Module* _mds, int _ModN){
-    CloseModulesPart();
-    InitModulePool();
-    for(int i=0; i<_ModN; i++){
-        AddModuleInfo(_mds[i]);
-    }
-    return 0;
-}
-
-FuncListArr* _sync_main(){
-    FuncListArr* result=(FuncListArr*)calloc(1, sizeof(FuncListArr));
-    result->_Func=Func;
-    result->_FuncNum=FuncNum;
-    return result;
-}
-
-ModuleList* _sync_mod_main(){
-    ModuleList* result=(ModuleList*)calloc(1, sizeof(ModuleList));
-    result->_m=Modules;
-    result->_mn=ModuleNum;
-    return result;
-}
-
-void* _sync_result_p(){
-    return p_result;
-}
-
-int mod_init(){
-    if(InitModulePool()!=1) return -1;
-    if(InitFuncPool()!=0){
-        CloseModules();
-        return 1;
-    }
+int mod_init(ModuleList* ML_m, FuncListArr* FLA_m, resultpShell* rpS_m){
+    ModL=ML_m;
+    FuncL=FLA_m;
+    rpS=rpS_m;
     return 0;
 }
 
@@ -217,11 +174,6 @@ FuncList Regist[]={
       {"exthelp", 1, exthelp, NULL},
       {"import", 1, import, NULL},
       {"list_functions", 1, listFuncs, NULL},
-      {"sync", 4, _sync, NULL},
-      {"sync_main", 4, NF, (void*)_sync_main},
-      {"sync_mod", 4, _sync_mod, NULL},
-      {"sync_mod_main", 4, NF, (void*)_sync_mod_main},
-      {"sync_result", 4, NF, _sync_result_p},
       {NULL, -1, NF, NULL}
 };
 

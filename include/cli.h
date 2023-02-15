@@ -37,7 +37,14 @@ typedef struct ArgWithAl{
 }ArgWithAl;
 
 extern char** EMPTY_LIST;
-extern void* result_p;
+
+typedef struct resultpShell{
+    void* resultp;
+}resultpShell;
+
+extern resultpShell* rpS;
+
+#define result_p rpS->resultp;
 
 extern ArgumentsList* DefaultArgPool;
 extern ArgumentsList* DefaultArgPoolHead;

@@ -6,6 +6,8 @@
  */
 
 #include "module-loader.h"
+#include "command-register.h"
+#include "cli.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -19,8 +21,7 @@
   #include <unistd.h>
 #endif
 
-Module* Modules;
-long int ModuleNum;
+ModuleList* ModL;
 
 double NF_C(){ return 0; }
 
@@ -45,6 +46,7 @@ extern int FindModule(const char* name){
 }
 
 extern int InitModulePool(){
+    ModL=(ModuleList*)calloc(1, sizeof(ModuleList));
     ModuleNum=0;
     Modules=(Module*)calloc(ModuleNum+2, sizeof(Module));
     if(Modules==NULL){
@@ -173,7 +175,7 @@ extern int RemoveLoaded(const char* name){
     free(Modules[Find].ModuleName);
     Module* new=(Module*)malloc(sizeof(Module)*(ModuleNum-1));
     if(new==NULL){
-        fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot allocate enough memories for RemoveLoaded()\n");
+        fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot allocate enough ram for RemoveLoaded()\n");
         return -1;
     }
     int counter=0;
@@ -195,17 +197,17 @@ extern int CallModuleInit(const char* name){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'\n", name);
         return -1;
     }
-    return Modules[Find].Init();
+    return Modules[Find].Init(ModL, FuncL, rpS);
 }
 
 extern void* GetPtrFunction(const char* name, const char* func){
-    PtrFunction Func=dlsym(Modules[FindModule(name)].dlheader, func);
+    PtrFunction _Func=dlsym(Modules[FindModule(name)].dlheader, func);
     char* err=dlerror();
     if(err!=NULL){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: Failed to load symbol `%s' from Module `%s', Reason:\n%s", func, name, err);
         return NULL;
     }
-    return Func;
+    return _Func;
 }
 
 extern int CloseModules(){
@@ -216,15 +218,7 @@ extern int CloseModules(){
     }
     ModuleNum=0;
     free(Modules);
-    return 0;
-}
-
-extern int CloseModulesPart(){
-    for(int i=0;i<ModuleNum;i++){
-        free(Modules[i].ModuleName);
-    }
-    ModuleNum=0;
-    free(Modules);
+    free(ModL);
     return 0;
 }
 

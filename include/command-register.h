@@ -10,13 +10,15 @@
 
 #include "module-loader.h"
 
-extern FuncList *Func;
-extern long int FuncNum;
-
 typedef struct FuncListArr{
     FuncList* _Func;
     unsigned long int _FuncNum;
 }FuncListArr;
+
+extern FuncListArr* FuncL;
+
+#define Func FuncL -> _Func
+#define FuncNum FuncL -> _FuncNum
 
 extern int FindFunc(const char*);
 

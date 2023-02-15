@@ -23,7 +23,7 @@ typedef void* (*PtrFunction)();
 typedef struct FuncList{
     char* name;
     int type;
-    _Function Func;
+    _Function _Func;
     PtrFunction PtrFunc;
 }FuncList;
 
@@ -40,8 +40,10 @@ typedef struct ModuleList{
     unsigned int _mn;
 }ModuleList;
 
-extern Module* Modules;
-extern long int ModuleNum;
+extern ModuleList* ModL;
+
+#define Modules ModL->_m
+#define ModuleNum ModL->_mn
 
 extern int FindModule(const char*);
 
@@ -56,7 +58,7 @@ extern int CallModuleInit(const char*);
 extern void* GetPtrFunction(const char*, const char*);
 
 extern int CloseModules();
-extern int CloseModulesPart();
+//extern int CloseModulesPart();
 
 
 #endif

@@ -1,3 +1,8 @@
+--- 2/15/2023
+ -- Version: 1.7.0
+  * Changes: New synchronous memory pool approach
+  - Removed: CloseModulePart
+
 --- 2/13/2023
  -- Version 1.6.7.1
   ! Modified: Use GPL v3 instead of GPL v2
