@@ -7,8 +7,6 @@
 #ifndef LMFSWS_CFG_H
 #define LMFSWS_CFG_H
 
-#define PREFIX "/usr"
-
 #define LIBNAME "/lib/"
 #define BINNAME "/bin/"
 
