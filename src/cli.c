@@ -305,6 +305,10 @@ extern double callArgFunc(Argument arg, ArgList al){
 }
 
 extern double doLMFSWSCmd(const char* data){
+    if(data==NULL){
+        fprintf(stderr, "\033[91;1mFatal Error\033[0m: LMFSWS Command cannot be address 0x0!\n");
+        return -1;
+    }
     PtrFunction parse=GetFunc("parse").PtrFunc;
     ArrayList* cmds=parse(data);
     double result=0;

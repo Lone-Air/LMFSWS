@@ -1,3 +1,8 @@
+--- 2/16/2023
+ -- Version 1.7.2
+  + Command: prompt <- Input
+             print_result getresult exec_lastresult exec <- tools
+
 --- 2/15/2023
  -- Version 1.7.1
   * Changes: LMFSWS can now be compiled by dynamically linking to the LMFSWS runtime

@@ -26,7 +26,7 @@ int mod_init(){
 
 int mod_helper(){
     printf("LMFS WorkStation - Work ToolBox\n");
-    printf("    input <prompt>\n");
+    printf("    prompt <prompt...>\n");
     printf("LMFSWorkStation Built-in Module. Don't Use it in a script!\n");
     return 0;
 }
@@ -57,12 +57,19 @@ char* input(const char* prompt){
     return res;
 }
 
-int mod_start(int argc, char* argv[]){
+void* userinput(int argc, char* argv[]){
+    for(int i=1;i<argc;i++)
+      printf("%s%c", argv[i], i+1>=argc?'\0':' ');
+    return input("");
+}
+
+int mod_start(){
     return 0;
 }
 
 FuncList Regist[]={
       {"input", 4, NULLFUNC, (void*)input},
+      {"prompt", 2, NULLFUNC, (void*)userinput},
       {NULL, -1, NULLFUNC, NULL}
 };
 

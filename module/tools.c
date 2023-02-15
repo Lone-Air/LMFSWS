@@ -7,20 +7,54 @@
  */
 
 #include "command-register.h"
+#include "module-loader.h"
+#include "cli.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-int mod_init(){ return 0; }
+resultpShell* rpS;
+
+int mod_init(ModuleList* ML_m, FuncListArr* FLA_m, resultpShell* rpS_m){
+    ModL=ML_m;
+    FuncL=FLA_m;
+    rpS=rpS_m;
+    return 0;
+}
+
 int mod_helper(){
     printf("LMFS WorkStation - Work ToolBox - Core Module\n");
     printf("    echo <text...>\n");
     printf("    system <command...>\n");
     printf("    exit [code]\n");
+    printf("    print_result --- Attention: Used only to return the contents of a ptrfunction (must be char*)");
+    printf("    getresult --- Attention: Used only to return the contents of a ptrfunction");
     printf("    version\n");
     printf("    clear\n");
     printf("LMFSWorkStation Built-in command.\n");
     return 0;
+}
+
+double printresult(){
+    printf("%s", (char*)(rpS->resultp));
+    return 0;
+}
+
+void* getresult(){
+    return rpS->resultp;
+}
+
+double runrps(){
+    return doLMFSWSCmd(getresult());
+}
+
+double execlmfswscmd(int argc, char* argv[]){
+    int status=0;
+    for(int i=1;i<argc;i++){
+        status=doLMFSWSCmd(argv[i]);
+        if(status==-1) return -1;
+    }
+    return status;
 }
 
 double echo(int argc, char* argv[]){
@@ -90,5 +124,9 @@ FuncList Regist[]={
       {"exit", 1, _lmfsws_exit, NULL},
       {"version", 1, version, NULL},
       {"clear", 1, _clear, NULL},
+      {"print_result", 1, printresult, NULL},
+      {"getresult", 2, NULL, (void*)getresult},
+      {"exec_lastresult", 1, runrps, NULL},
+      {"exec", 1, execlmfswscmd, NULL},
       {NULL, -1, NF, NULL}
 };
