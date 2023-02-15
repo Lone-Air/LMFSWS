@@ -27,7 +27,7 @@ int mod_init(){
 int mod_helper(){
     printf("LMFS WorkStation - Work ToolBox\n");
     printf("    prompt <prompt...>\n");
-    printf("LMFSWorkStation Built-in Module. Don't Use it in a script!\n");
+    printf("LMFSWorkStation Built-in Module.\n");
     return 0;
 }
 
