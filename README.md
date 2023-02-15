@@ -60,7 +60,7 @@ FuncList Regist[]={
     Content(Example):
         LAZY
     Write "LAZY" to tell LMFSWS module-loader use RTLD_LAZY Mode in LIBDL
-4. In the end. Compile XXX.c to XXX.so and put XXX.mode to the same as directory of XXX.so
+4. In the end. Compile XXX.c to XXX.so with c compiler flag "-lLMFSWS" and put XXX.mode to the same as directory of XXX.so
    Start "LMFSWS" and
 ```
 include XXX // This is the name of your module

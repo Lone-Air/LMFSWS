@@ -1,5 +1,9 @@
 --- 2/15/2023
- -- Version: 1.7.0
+ -- Version 1.7.1
+  * Changes: LMFSWS can now be compiled by dynamically linking to the LMFSWS runtime
+
+--- 2/15/2023
+ -- Version 1.7.0
   * Changes: New synchronous memory pool approach
   - Removed: CloseModulePart
 

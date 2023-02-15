@@ -9,6 +9,8 @@ PREFIX=/usr
 CP=cp
 CHMOD=chmod
 
+AR=ar
+
 CC=gcc
 CFLAGS="-std=c11 -I../include -Wall -Wno-deprecated-non-prototype -DPREFIX=\"$PREFIX\""
 EXTRA_CFLAGS="-fPIC"
@@ -17,6 +19,8 @@ LIBS="-DHAVE_READLINE -lreadline"
 LDFLAGS="-pie -fPIE"
 SOFLAGS="-shared"
 MODULE_EXTRA_FLAGS=""
+
+LINK_FILE="libLMFSWS.so"
 
 OBJECT=LMFSWS
 
@@ -38,6 +42,7 @@ function _help(){
        -version        Show version of the cloned LMFSWS source
        -no-pie         Build ELF EXEC Object for LMFSWS not ELF PIE-EXEC Object
        -strip          Automatic strip
+       -link-static    Use libLMFSWS.a to link LMFSWS not libLMFSWS.so
        -help           Show this message
     "
 }
@@ -82,6 +87,8 @@ function _start(){
             MODULE_EXTRA_FLAGS="-s"
         elif [ "$i" = "-windows" ]; then
             EXTRA_CFLAGS=""
+        elif [ "$i" = "-link-static" ]; then
+            LINK_FILE="libLMFSWS.a"
         elif [ "$i" = "-help" ]; then
             _help
         else
@@ -127,22 +134,26 @@ function part_main(){
     runNoEXIT mkdir build
     run ${CP} LICENSE build
     run cd src
-    FILES=$(ls *.c)
+    ALLFILES="command-register.o module-loader.o cli.o"
+    ALLCFILES="command-register.c module-loader.c cli.c"
     run cd ..
     run cd build
 
     # MAIN
-    tell "for i in $FILES
+    tell "for i in $ALLCFILES
 do
     ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/"'$i'" -o "'$i'".o -c
 done"
 
-    for i in $FILES
+    for i in $ALLCFILES
     do
         run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c
     done
 
-    run ${CC} $LDFLAGS *.o -o ${OBJECT}
+    run ${CC} $EXTRA_CFLAGS $LDFLAGS *.o $SOFLAGS -o libLMFSWS.so
+    run ${AR} rcs libLMFSWS.a *.o
+
+    run ${CC} $CFLAGS -I.. $LDFLAGS ../src/LMFSWorkStation.c $LINK_FILE -o $OBJECT
 }
 
 function part_module(){
@@ -161,7 +172,7 @@ function part_module(){
     run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
 
     ## Extenal Modules User Mode Loader - Required
-    run ${CC} ../module/register.c command-register.c.o module-loader.c.o ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
+    run ${CC} ../module/register.c $LINK_FILE ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
 
     ## Core commands - Required
     run ${CC} ../module/tools.c ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
@@ -177,10 +188,11 @@ function part_install(){
     runNoEXIT mkdir -p $PREFIX/lib/LMFSWSModules
     runNoEXIT mkdir -p $PREFIX/bin
     runNoEXIT mkdir -p $PREFIX/share/licenses/LMFSWS
-    run ${CP} modules/* $PREFIX/lib/LMFSWSModules
-    run ${CP} ${OBJECT} $PREFIX/bin
+    run ${CP} -rf modules/* $PREFIX/lib/LMFSWSModules
+    run ${CP} -rf *.a *.so $PREFIX/lib
+    run ${CP} -rf ${OBJECT} $PREFIX/bin
     run ${CHMOD} 755 $PREFIX/bin/${OBJECT}
-    run ${CP} LICENSE $PREFIX/share/licenses/LMFSWS
+    run ${CP} -rf LICENSE $PREFIX/share/licenses/LMFSWS
 
     runNoEXIT mkdir -p $PREFIX/include/LMFSWS
     run ${CP} -rf ../include/* $PREFIX/include/LMFSWS

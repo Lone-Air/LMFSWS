@@ -68,7 +68,7 @@ int main(int argc, char* argv[]){
     RegisterArg((Argument){'\0', "run", "Run file --run=file1,file2", 1, run});
     RegisterArg((Argument){'\0', "runfiles", "Run file --runfiles file1 file2", 2, run});
     RegisterArg((Argument){'v', "version", "Get version of LMFSWorkStation", 3, _get_version});
-    RegisterArg((Argument){'c', "command", "Execute a command in  LMFSWorkStation without command line", 4, _run_command});
+    RegisterArg((Argument){'c', "command", "Execute a command in LMFSWorkStation without command line", 4, _run_command});
     if(argc==1){
         fprintf(stdout,
 #include "HELLOTEXT"
