@@ -27,8 +27,8 @@ int mod_helper(){
     printf("    echo <text...>\n");
     printf("    system <command...>\n");
     printf("    exit [code]\n");
-    printf("    print_result --- Attention: Used only to return the contents of a ptrfunction (must be char*)");
-    printf("    getresult --- Attention: Used only to return the contents of a ptrfunction");
+    printf("    print_result --- Attention: Used only to return the contents of a ptrfunction (must be char*)\n");
+    printf("    getresult --- Attention: Used only to return the contents of a ptrfunction\n");
     printf("    version\n");
     printf("    clear\n");
     printf("LMFSWorkStation Built-in command.\n");
