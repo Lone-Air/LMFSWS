@@ -182,7 +182,7 @@ function part_install(){
     run ${CHMOD} 755 $PREFIX/bin/${OBJECT}
     run ${CP} LICENSE $PREFIX/share/licenses/LMFSWS
 
-    runNoEXIT mkdir $PREFIX/include/LMFSWS
+    runNoEXIT mkdir -p $PREFIX/include/LMFSWS
     run ${CP} -rf ../include/* $PREFIX/include/LMFSWS
 }
 
