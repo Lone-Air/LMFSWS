@@ -10,7 +10,7 @@ CP=cp
 CHMOD=chmod
 
 CC=gcc
-CFLAGS="-std=c11 -I../include -Wall -Wno-deprecated-non-prototype -DPREFIX=$PREFIX"
+CFLAGS="-std=c11 -I../include -Wall -Wno-deprecated-non-prototype -DPREFIX=\"$PREFIX\""
 EXTRA_CFLAGS="-fPIC"
 OPT="-O3"
 LIBS="-DHAVE_READLINE -lreadline"
