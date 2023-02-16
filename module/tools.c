@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-resultpShell* rpS;
+//resultpShell* rpS;
 
 int mod_init(ModuleList* ML_m, FuncListArr* FLA_m, resultpShell* rpS_m){
     ModL=ML_m;
