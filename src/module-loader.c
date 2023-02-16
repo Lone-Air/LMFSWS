@@ -56,7 +56,7 @@ extern int InitModulePool(){
     return 1;
 }
 
-extern int LoadModule(const char* mod_name){
+extern int LoadModuleByName(const char* mod_name){
     if(FindModule(mod_name)!=-1) return 0;
     void* dlh;
     FuncList* list;

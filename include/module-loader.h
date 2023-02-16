@@ -48,7 +48,7 @@ extern ModuleList* ModL;
 extern int FindModule(const char*);
 
 extern int InitModulePool();
-extern int LoadModule(const char*);
+extern int LoadModuleByName(const char*);
 
 extern int RemoveLoaded(const char*);
 

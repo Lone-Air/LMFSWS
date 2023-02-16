@@ -111,7 +111,7 @@ double include(int argc, char* argv[]){
             fprintf(stderr, "\033[91;1mError\033[0m: You can't include 'register' itself!\n");
             return -1;
         }
-        if(LoadModule(argv[i])==-1) return -1;
+        if(LoadModuleByName(argv[i])==-1) return -1;
     };
     return 0;
 }
@@ -129,7 +129,7 @@ double import(int argc, char* argv[]){
             fprintf(stderr, "\033[91;1mError\033[0m: You can't include 'register' itself!\n");
             return -1;
         }
-        if(LoadModule(argv[i])!=-1){
+        if(LoadModuleByName(argv[i])!=-1){
             regist(argv[i]);
         }else return -1;
     }

@@ -432,25 +432,25 @@ extern int InitLMFSWS(){
     L_s->fla=FuncL;
     L_s->ml=ModL;
     int status;
-    status=LoadModule("Input");
+    status=LoadModuleByName("Input");
     if(status==-1){
         fprintf(stderr, "LMFS WorkStation has crashed\n");
         return -1;
     }
     if(regist("Input")==-1) return -1;
-    status=LoadModule("cmdline");
+    status=LoadModuleByName("cmdline");
     if(status==-1){
         fprintf(stderr, "LMFS WorkStation has crashed\n");
         return -1;
     }
     if(regist("cmdline")==-1) return -1;
-    status=LoadModule("tools");
+    status=LoadModuleByName("tools");
     if(status==-1){
         fprintf(stderr, "LMFS WorkStation has crashed\n");
         return -1;
     }
     if(regist("tools")==-1) return -1;
-    status=LoadModule("register");
+    status=LoadModuleByName("register");
     if(status==-1){
         fprintf(stderr, "LMFS WorkStation has crashed\n");
         return -1;
