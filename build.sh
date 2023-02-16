@@ -96,6 +96,7 @@ function _start(){
             LINK_FILE="libLMFSWS.dll"
             DLNAME=".dll"
             LIBNAME="bin"
+            OBJECT="LMFSWS.exe"
         elif [ "$i" = "-link-static" ]; then
             LINK_FILE="libLMFSWS.a"
         elif [ "$i" = "-help" ]; then
