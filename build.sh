@@ -27,6 +27,8 @@ OBJECT=LMFSWS
 WINDOWS=
 DLNAME=".so"
 
+LIBNAME="lib"
+
 echo -e "\e[91;1mYou should run this script under the project root\e[0m"
 
 function _help(){
@@ -93,6 +95,7 @@ function _start(){
             WINDOWS=yes
             LINK_FILE="libLMFSWS.dll"
             DLNAME=".dll"
+            LIBNAME="bin"
         elif [ "$i" = "-link-static" ]; then
             LINK_FILE="libLMFSWS.a"
         elif [ "$i" = "-help" ]; then
@@ -195,7 +198,8 @@ function part_install(){
     runNoEXIT mkdir -p $PREFIX/bin
     runNoEXIT mkdir -p $PREFIX/share/licenses/LMFSWS
     run ${CP} -rf modules/* $PREFIX/lib/LMFSWSModules
-    run ${CP} -rf *.a *"$DLNAME" $PREFIX/lib
+    run ${CP} -rf *.a $PREFIX/lib
+    run ${CP} -rf *"$DLNAME" $PREFIX/$LIBNAME
     run ${CP} -rf ${OBJECT} $PREFIX/bin
     run ${CHMOD} 755 $PREFIX/bin/${OBJECT}
     run ${CP} -rf LICENSE $PREFIX/share/licenses/LMFSWS
