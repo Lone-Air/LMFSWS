@@ -195,7 +195,7 @@ function part_install(){
     runNoEXIT mkdir -p $PREFIX/bin
     runNoEXIT mkdir -p $PREFIX/share/licenses/LMFSWS
     run ${CP} -rf modules/* $PREFIX/lib/LMFSWSModules
-    run ${CP} -rf *.a *.so $PREFIX/lib
+    run ${CP} -rf *.a *.so *.dll $PREFIX/lib
     run ${CP} -rf ${OBJECT} $PREFIX/bin
     run ${CHMOD} 755 $PREFIX/bin/${OBJECT}
     run ${CP} -rf LICENSE $PREFIX/share/licenses/LMFSWS
