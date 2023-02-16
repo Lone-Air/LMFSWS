@@ -25,6 +25,7 @@ LINK_FILE="libLMFSWS.so"
 OBJECT=LMFSWS
 
 WINDOWS=
+DLNAME=".so"
 
 echo -e "\e[91;1mYou should run this script under the project root\e[0m"
 
@@ -91,6 +92,7 @@ function _start(){
             EXTRA_CFLAGS=""
             WINDOWS=yes
             LINK_FILE="libLMFSWS.dll"
+            DLNAME=".dll"
         elif [ "$i" = "-link-static" ]; then
             LINK_FILE="libLMFSWS.a"
         elif [ "$i" = "-help" ]; then
@@ -154,7 +156,7 @@ done"
         run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c
     done
 
-    run ${CC} $EXTRA_CFLAGS $LDFLAGS *.o $SOFLAGS -o libLMFSWS.so
+    run ${CC} $EXTRA_CFLAGS $LDFLAGS *.o $SOFLAGS -o libLMFSWS"$DLNAME"
     run ${AR} rcs libLMFSWS.a *.o
 
     run ${CC} $CFLAGS -I.. $LDFLAGS ../src/LMFSWorkStation.c $LINK_FILE -o $OBJECT
