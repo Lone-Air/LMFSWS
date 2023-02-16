@@ -16,7 +16,7 @@
 char** EMPTY_LIST={0};
 void* res;
 
-resultpShell *rpS;
+resultpShell* rpS;
 LMFSWS_State *L_s;
 
 Ala* ALAM;

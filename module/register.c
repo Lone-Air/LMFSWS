@@ -15,8 +15,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-resultpShell* rpS;
-
 int mod_helper(){
     printf("LMFS WorkStation - Work ToolBox - Core Command\n");
     printf("    include <modules...>\n");
