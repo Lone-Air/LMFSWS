@@ -8,6 +8,7 @@
 #define LMFSWS_CLI_H
 
 #include "module-loader.h"
+#include "command-register.h"
 #include <stdbool.h>
 
 typedef struct Argument{
@@ -31,6 +32,12 @@ typedef struct ArgumentsList{
     struct ArgumentsList* last;
 }ArgumentsList;
 
+typedef struct Ala{
+    ArgumentsList* l;
+}Ala;
+
+extern Ala* ALAM;
+
 typedef struct ArgWithAl{
     char* name;
     ArgList arg;
@@ -42,11 +49,20 @@ typedef struct resultpShell{
     void* resultp;
 }resultpShell;
 
+typedef struct LMFSWS_State{
+    Ala* als;
+    ArgumentsList* ale;
+    resultpShell *rps;
+    FuncListArr* fla;
+    ModuleList* ml;
+}LMFSWS_State;
+
+extern LMFSWS_State* L_s;
 extern resultpShell* rpS;
 
-#define result_p rpS->resultp;
+#define result_p rpS->resultp
+#define DefaultArgPool ALAM->l
 
-extern ArgumentsList* DefaultArgPool;
 extern ArgumentsList* DefaultArgPoolHead;
 
 extern void InitArgPool();
@@ -56,6 +72,8 @@ extern Argument GetArgByFullFlag(char*);
 extern Argument GetArgbyShortFlag(char);
 extern void callArgs(int argc, char** argv);
 extern double callArgFunc(Argument, ArgList);
+
+extern void UseState(LMFSWS_State*);
 
 extern double doLMFSWSCmd(const char*);
 

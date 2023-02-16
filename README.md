@@ -20,10 +20,8 @@ $ sudo ./build.sh
 #include <LMFSWS/cli.h>
 #include <stdlib.h>
 
-int mod_init(ModuleList* ModL_m, FuncListArr* FuncL_m, resultpShell* rpS_m){
-    ModL=ModL_m;
-    FuncL=FuncL_m;
-    rpS=rpS_m;
+int mod_init(LMFSWS_State* L){
+    UseState(L);
     /* Do something else... */
     return 0; // If it successfully
 }

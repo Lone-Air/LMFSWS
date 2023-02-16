@@ -24,6 +24,8 @@ LINK_FILE="libLMFSWS.so"
 
 OBJECT=LMFSWS
 
+WINDOWS=
+
 echo -e "\e[91;1mYou should run this script under the project root\e[0m"
 
 function _help(){
@@ -87,6 +89,8 @@ function _start(){
             MODULE_EXTRA_FLAGS="-s"
         elif [ "$i" = "-windows" ]; then
             EXTRA_CFLAGS=""
+            WINDOWS=yes
+            LINK_FILE="libLMFSWS.dll"
         elif [ "$i" = "-link-static" ]; then
             LINK_FILE="libLMFSWS.a"
         elif [ "$i" = "-help" ]; then

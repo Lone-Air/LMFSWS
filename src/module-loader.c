@@ -197,7 +197,7 @@ extern int CallModuleInit(const char* name){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'\n", name);
         return -1;
     }
-    return Modules[Find].Init(ModL, FuncL, rpS);
+    return Modules[Find].Init(L_s);
 }
 
 extern void* GetPtrFunction(const char* name, const char* func){

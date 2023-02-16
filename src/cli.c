@@ -17,8 +17,9 @@ char** EMPTY_LIST={0};
 void* res;
 
 resultpShell *rpS;
+LMFSWS_State *L_s;
 
-ArgumentsList* DefaultArgPool;
+Ala* ALAM;
 ArgumentsList* DefaultArgPoolHead;
 
 extern double help_LMFSWS(int argc, char** argv){
@@ -37,6 +38,7 @@ extern double help_LMFSWS(int argc, char** argv){
 }
 
 extern void InitArgPool(){
+    ALAM=(Ala*)calloc(1, sizeof(Ala));
     DefaultArgPool=(ArgumentsList*)calloc(1, sizeof(ArgumentsList));
     DefaultArgPoolHead=DefaultArgPool;
     DefaultArgPool->last=NULL;
@@ -413,8 +415,22 @@ extern double doLMFSWSCmd(const char* data){
     return result;
 }
 
+extern void UseState(LMFSWS_State* L){
+    ALAM=L->als;
+    DefaultArgPool=L->ale;
+    rpS=L->rps;
+    FuncL=L->fla;
+    ModL=L->ml;
+}
+
 extern int InitLMFSWS(){
     rpS=(resultpShell*)calloc(1, sizeof(resultpShell));
+    L_s=(LMFSWS_State*)calloc(1, sizeof(LMFSWS_State));
+    L_s->als=ALAM;
+    L_s->ale=DefaultArgPool;;
+    L_s->rps=rpS;
+    L_s->fla=FuncL;
+    L_s->ml=ModL;
     int status;
     status=LoadModule("Input");
     if(status==-1){

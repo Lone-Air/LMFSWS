@@ -63,10 +63,6 @@ void* userinput(int argc, char* argv[]){
     return input("");
 }
 
-int mod_start(){
-    return 0;
-}
-
 FuncList Regist[]={
       {"input", 4, NULLFUNC, (void*)input},
       {"prompt", 2, NULLFUNC, (void*)userinput},

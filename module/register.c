@@ -157,10 +157,8 @@ double listFuncs(){
     return 0;
 }
 
-int mod_init(ModuleList* ML_m, FuncListArr* FLA_m, resultpShell* rpS_m){
-    ModL=ML_m;
-    FuncL=FLA_m;
-    rpS=rpS_m;
+int mod_init(LMFSWS_State* L){
+    UseState(L);
     return 0;
 }
 
