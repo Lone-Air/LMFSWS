@@ -20,8 +20,6 @@ $ sudo ./build.sh
 #include <LMFSWS/cli.h>
 #include <stdlib.h>
 
-resultpShell* rpS;
-
 int mod_init(ModuleList* ModL_m, FuncListArr* FuncL_m, resultpShell* rpS_m){
     ModL=ModL_m;
     FuncL=FuncL_m;
@@ -33,8 +31,6 @@ int mod_init(ModuleList* ModL_m, FuncListArr* FuncL_m, resultpShell* rpS_m){
 double Fun1(){ return 1+1; }
 char* Fun2(){ return "abc"; }
 
-double NF(){ return -1; } // Empty Function
-
 FuncList Regist[]={
     {
         "Fun1", // Name of command in LMFSWS
@@ -45,13 +41,13 @@ FuncList Regist[]={
     {
         "Fun2",
         2,
-        NF, // Empty Function to fill the Normal Function space
+        NULL, // 0x0 to fill the Normal Function space
         (void*)Fun2 // Pointer Function (force to convert the type to void*!)
     },
     {
         NULL, // End of Register List. You should follow the style
         -1,
-        NF,
+        NULL,
         NULL
     }
 };
