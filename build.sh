@@ -47,7 +47,6 @@ function _help(){
        -version        Show version of the cloned LMFSWS source
        -no-pie         Build ELF EXEC Object for LMFSWS not ELF PIE-EXEC Object
        -strip          Automatic strip
-       -link-static    Use libLMFSWS.a to link LMFSWS not libLMFSWS.so
        -help           Show this message
     "
 }
@@ -97,8 +96,6 @@ function _start(){
             DLNAME=".dll"
             LIBNAME="bin"
             OBJECT="LMFSWS.exe"
-        elif [ "$i" = "-link-static" ]; then
-            LINK_FILE="libLMFSWS.a"
         elif [ "$i" = "-help" ]; then
             _help
         else
