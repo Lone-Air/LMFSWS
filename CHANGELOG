@@ -39,7 +39,7 @@
   - Fix: Renamed function _exit to _lmfsws_exit in module/tools.c
   + Feature: Improve error reporting system and pointer function storage
 
---- 2/2/2023
+--- 2/5/2023
  -- Patch 1.6.5-2
   - Fix: Fixed a bug; string syntax cannot end
 
