@@ -17,7 +17,7 @@ EXTRA_CFLAGS="-fPIC"
 OPT="-O3"
 LIBS="-DHAVE_READLINE -lreadline"
 LDFLAGS="-pie -fPIE -ldl"
-SOFLAGS="-shared"
+SOFLAGS="-shared -ldl"
 MODULE_EXTRA_FLAGS=""
 
 LINK_FILE="libLMFSWS.so"
