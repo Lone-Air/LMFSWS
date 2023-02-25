@@ -16,7 +16,7 @@ CFLAGS="-std=c11 -I../include -Wall -Wno-deprecated-non-prototype -DPREFIX=\"$PR
 EXTRA_CFLAGS="-fPIC"
 OPT="-O3"
 LIBS="-DHAVE_READLINE -lreadline"
-LDFLAGS="-pie -fPIE"
+LDFLAGS="-pie -fPIE -ldl"
 SOFLAGS="-shared"
 MODULE_EXTRA_FLAGS=""
 
