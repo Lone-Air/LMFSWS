@@ -62,7 +62,7 @@ double echo(int argc, char* argv[]){
 }
 
 double _system(int argc, char* argv[]){
-    int status;
+    int status=0;
     for(int i=1;i<argc;i++){
         status=system(argv[i]);
     }

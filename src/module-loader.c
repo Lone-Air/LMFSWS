@@ -82,8 +82,8 @@ extern int LoadModuleByName(const char* mod_name){
     strcpy(SYSMOD, MODULE);
     strcat(SYSMOD, name);
 
-    char cwd[2048];
-    getcwd(cwd, 2048);
+    char* cwd=calloc(2048, sizeof(char));
+    cwd=getcwd(cwd, 2048);
 
     char* UNDERMOD=(char*)malloc(strlen(cwd)+1+strlen("/")+strlen(mod_name)+strlen(".mode"));
     strcpy(UNDERMOD, cwd);
@@ -152,6 +152,7 @@ finish:
     free(SYSMOD);
     free(UNDERMOD);
     free(UNDERNAME);
+    free(cwd);
 
     if(err) return -1;
 
