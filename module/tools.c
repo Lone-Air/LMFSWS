@@ -62,10 +62,11 @@ double echo(int argc, char* argv[]){
 }
 
 double _system(int argc, char* argv[]){
+    int status;
     for(int i=1;i<argc;i++){
-        system(argv[i]);
+        status=system(argv[i]);
     }
-    return 0;
+    return status;
 }
 
 int sToi(char* s){
