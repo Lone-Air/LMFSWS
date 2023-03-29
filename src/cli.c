@@ -338,22 +338,7 @@ extern double doLMFSWSCmd(const char* data){
                         continue;
                     }
                     int index=FindModule(Arg.argv[i]);
-                    if(index==-1){
-                        char** newargv_=(char**)malloc((Arg.argc+2)*sizeof(char*));
-                        int count=0;
-                        newargv_[0]="exthelp";
-                        for(int i=0;i<Arg.argc;i++){
-                            newargv_[count]=(char*)malloc(strlen(Arg.argv[i])+2);
-                            memset(newargv_[count], 0, strlen(Arg.argv[i])+2);
-                            strcpy(newargv_[count++], Arg.argv[i]);
-                        }
-                        ArgList newarg_={count, newargv_};
-                        result=GetFunc("exthelp")._Func(newarg_.argc, newarg_.argv);
-                        if(result==-1) return -1;
-                        for(int i=1;i<count;i++)
-                          free(newargv_[i]);
-                    }
-                        _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
+                    _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
                     char* err=dlerror();
                     if(err!=NULL){
                         fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\nMaybe 'exthelp' will be successful\n", err);
@@ -397,19 +382,10 @@ extern double doLMFSWSCmd(const char* data){
                     rpS->resultp=GetFunc(Arg.argv[0]).PtrFunc(Arg);
                 }
             }
-        }else{
-            char** newargv=(char**)malloc((Arg.argc+2)*sizeof(char*));
-            int _count=0;
-            newargv[0]="execext";
-            for(int i=0;i<Arg.argc;i++){
-                newargv[_count]=(char*)malloc(strlen(Arg.argv[i])+2);
-                memset(newargv[_count], 0, strlen(Arg.argv[i])+2);
-                strcpy(newargv[_count++], Arg.argv[i]);
-            }
-            ArgList newarg={_count, newargv};
-            result=GetFunc("execext")._Func(newarg.argc, newarg.argv);
-            for(int i=1;i<_count;i++)
-              free(newargv[i]);
+        }
+        else{
+        	fprintf(stderr, "\033[91;1mError\033[0m: `%s' not found\n", Arg.argv[0]);
+        	return -1;
         }
     }
     return result;

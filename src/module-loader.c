@@ -57,7 +57,10 @@ extern int InitModulePool(){
 }
 
 extern int LoadModuleByName(const char* mod_name){
-    if(FindModule(mod_name)!=-1) return 0;
+    if(FindModule(mod_name)!=-1){
+        fprintf(stderr, "\033[95;1mWarning\033[0m: The module which named `%s' had been loaded\n", mod_name);
+        return 0;
+    };
     void* dlh;
     FuncList* list;
     _Function Init;

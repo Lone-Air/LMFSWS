@@ -1,5 +1,10 @@
 --- 3/30/2023
- -- Versiob 1.7.4
+ -- Version 1.7.5
+  - Removed: execext exthelp
+  + Feature: Throw a warning when the same module is loaded more than once
+
+--- 3/30/2023
+ -- Version 1.7.4
   * Changes: Better <command prompt Input.c>
   + Feature: Command Line Completion
 
