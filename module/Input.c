@@ -20,7 +20,40 @@
 
 double NULLFUNC(){ return -1; }
 
+char* first_x_data(char* _s, int x){
+	char* result=malloc(x*sizeof(char)+1);
+	for(int i=0;i<x;i++){
+	    result[i]=_s[i];
+	    if(i==x-1)
+	      result[i+1]='\0';
+	}
+	return result;
+}
+
+char* Generator(const char* part, int state){
+    char* ptr;
+    char* result;
+    char* temp;
+    int ok=0;
+    for(int i=0;i<FuncNum;i++){
+        ptr=Func[i].name;
+        temp=first_x_data(ptr, strlen(part));
+        if(strcmp(temp, part)==0 || strcmp(part, "")==0){
+            if(state>ok)
+              ok++;
+            else{
+                result=malloc(sizeof(char)*strlen(ptr));
+                strcpy(result, ptr);
+                return result;
+            }
+        }
+        free(temp);
+    }
+    return NULL;
+}
+
 int mod_init(){
+    rl_completion_entry_function=Generator;
     return 0;
 }
 
@@ -58,9 +91,17 @@ char* input(const char* prompt){
 }
 
 void* userinput(int argc, char* argv[]){
-    for(int i=1;i<argc;i++)
-      printf("%s%c", argv[i], i+1>=argc?'\0':' ');
-    return input("");
+    char* prompt=(char*)calloc(1, sizeof(char));
+    size_t len=1;
+    for(int i=1;i<argc;i++){
+        len=len+strlen(argv[i])+1;
+        prompt=(char*)realloc(prompt, len*sizeof(char));
+        if(i!=1) strcat(prompt, " ");
+        strcat(prompt, argv[i]);
+    }
+    char* result=input(prompt);
+    free(prompt);
+    return result;
 }
 
 FuncList Regist[]={

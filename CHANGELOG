@@ -1,3 +1,8 @@
+--- 3/30/2023
+ -- Versiob 1.7.4
+  * Changes: Better <command prompt Input.c>
+  + Feature: Command Line Completion
+
 --- 2/16/2023
  -- Version 1.7.3
   * Changes: new mod_start format; LoadModule was renamed to LoadModuleByName
