@@ -21,7 +21,7 @@
 double NULLFUNC(){ return -1; }
 
 char* first_x_data(char* _s, int x){
-	char* result=malloc(x*sizeof(char)+1);
+	char* result=(char*)calloc(x*sizeof(char)+1);
 	for(int i=0;i<x;i++){
 	    result[i]=_s[i];
 	    if(i==x-1)
@@ -42,7 +42,7 @@ char* Generator(const char* part, int state){
             if(state>ok)
               ok++;
             else{
-                result=(char*)malloc(sizeof(char)*strlen(ptr)+1);
+                result=(char*)calloc(sizeof(char)*strlen(ptr)+1);
                 strcpy(result, ptr);
                 return result;
             }
