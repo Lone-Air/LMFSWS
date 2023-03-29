@@ -42,7 +42,7 @@ char* Generator(const char* part, int state){
             if(state>ok)
               ok++;
             else{
-                result=malloc(sizeof(char)*strlen(ptr));
+                result=(char*)malloc(sizeof(char)*strlen(ptr)+1);
                 strcpy(result, ptr);
                 return result;
             }
