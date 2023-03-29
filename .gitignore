@@ -3,3 +3,4 @@ temp
 *.o
 build
 *~
+*.log
