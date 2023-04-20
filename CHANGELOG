@@ -1,3 +1,6 @@
+--- 4/21/2023
+ -- Patch 1.7.5-1
+  - Fixed: fixed known bugs
 --- 3/30/2023
  -- Version 1.7.5
   - Removed: execext exthelp

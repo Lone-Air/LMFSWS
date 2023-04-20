@@ -100,24 +100,35 @@ extern int LoadModuleByName(const char* mod_name){
     strcat(UNDERNAME, mod_name);
     strcat(UNDERNAME, ".so");
 
-    char* cache;
+    char* cache={0};
 
     FILE* cfg=fopen(SYSPATH, "r");
     if(cfg==NULL){
-        cfg=fopen(UNDERMOD, "r");
+        cfg=fopen(UNDERNAME, "r");
         if(cfg==NULL){
             fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'\n", mod_name);
             err=1;
             goto finish;
         }
-        cache=load(cfg);
-        dlh=dlopen(UNDERNAME, strcmp(cache, "LAZY")==0?RTLD_LAZY:RTLD_NOW);
+        cfg=fopen(UNDERMOD, "r");
+        if(cfg!=NULL){
+            cache=load(cfg);
+            dlh=dlopen(UNDERNAME, (strcmp(cache, "LAZY\n")==0 || strcmp(cache, "LAZY")==0)?RTLD_LAZY:RTLD_NOW);
+        }else{
+            dlh=dlopen(UNDERNAME, RTLD_NOW);
+        }
     }else{
-        cache=load(cfg);
-        dlh=dlopen(SYSPATH, strcmp(cache, "LAZY")==0?RTLD_LAZY:RTLD_NOW);
+        cfg=fopen(SYSMOD, "r");
+        if(cfg!=NULL){
+            cache=load(cfg);
+            dlh=dlopen(SYSPATH, (strcmp(cache, "LAZY\n")==0 || strcmp(cache, "LAZY")==0)?RTLD_LAZY:RTLD_NOW);
+        }
+        else{
+            dlh=dlopen(SYSPATH, RTLD_NOW);
+        }
     }
 
-    free(cache);
+    if(cfg!=NULL) free(cache);
 
     if(!dlh){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: %s\n", dlerror());

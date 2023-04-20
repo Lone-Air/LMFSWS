@@ -4,7 +4,7 @@
 #
 # LICENSE SEE $ROOT/LICENSE
 
-PREFIX=/usr
+PREFIX=/usr/local
 
 CP=cp
 CHMOD=chmod
@@ -21,6 +21,8 @@ SOFLAGS="-shared -ldl"
 MODULE_EXTRA_FLAGS=""
 
 LINK_FILE="libLMFSWS.so"
+
+RUNTIME="-lLMFSWS"
 
 OBJECT=LMFSWS
 
@@ -173,16 +175,16 @@ function part_module(){
     run ${CP} ../module/*.mode modules
 
     ## Input - Required
-    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
+    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME}
 
     ## Command Line - Required
-    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
+    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME}
 
     ## Extenal Modules User Mode Loader - Required
-    run ${CC} ../module/register.c $LINK_FILE ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
+    run ${CC} ../module/register.c $LINK_FILE ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME}
 
     ## Core commands - Required
-    run ${CC} ../module/tools.c $LINK_FILE ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS
+    run ${CC} ../module/tools.c $LINK_FILE ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME}
 
 }
 
