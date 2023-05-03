@@ -1,3 +1,10 @@
+--- 5/4/2023
+ -- Version 1.8
+  + Feature: Security module: login (optional at compiling)
+  - Removed: Nonsense text when LMFSWS initialization crashes
+  * Changes: Move the default values of all variables in the build script to the 'install_config.json'
+  * Attention: If the login module is enabled, adding an accessor requires the owner to execute `chpasswd <uid>` and then set a password (leave the password blank for no password)
+
 --- 4/21/2023
  -- Patch 1.7.5-1
   - Fixed: fixed known bugs

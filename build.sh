@@ -4,32 +4,39 @@
 #
 # LICENSE SEE $ROOT/LICENSE
 
-PREFIX=/usr/local
+echo "Loading configuration..."
 
-CP=cp
-CHMOD=chmod
+function getconfig(){
+    python3 installconfig.py "$@"
+}
 
-AR=ar
+PREFIX=$(getconfig prefix)
 
-CC=gcc
-CFLAGS="-std=c11 -I../include -Wall -Wno-deprecated-non-prototype -DPREFIX=\"$PREFIX\""
-EXTRA_CFLAGS="-fPIC"
-OPT="-O3"
-LIBS="-DHAVE_READLINE -lreadline"
-LDFLAGS="-pie -fPIE -ldl"
-SOFLAGS="-shared -ldl"
-MODULE_EXTRA_FLAGS=""
+CP=$(getconfig cp)
+CHMOD=$(getconfig chmod)
+ID=$(getconfig id)
 
-LINK_FILE="libLMFSWS.so"
+AR=$(getconfig ar)
 
-RUNTIME="-lLMFSWS"
+CC=$(getconfig cc)
+CFLAGS=$(getconfig cflags)
+EXTRA_CFLAGS=$(getconfig extra_cflags)
+OPT=$(getconfig optimize)
+LIBS=$(getconfig dependences)
+LDFLAGS=$(getconfig ldflags)
+SOFLAGS=$(getconfig soflags)
+MODULE_EXTRA_FLAGS=$(getconfig module_extra_flags)
 
-OBJECT=LMFSWS
+LINK_FILE=$(getconfig shared_lib)
 
-WINDOWS=
-DLNAME=".so"
+RUNTIME=$(getconfig requires)
 
-LIBNAME="lib"
+OBJECT=$(getconfig compile_output)
+
+WINDOWS=$(getconfig windows_flags)
+DLNAME=$(getconfig dynamic_libraries_suffix)
+
+LIBNAME=$(getconfig library_name_prefix)
 
 echo -e "\e[91;1mYou should run this script under the project root\e[0m"
 
@@ -43,15 +50,18 @@ function _help(){
        -install        Enable automatic install
        -debug          Append '-ggdb3' to \$CFLAGS
        -windows        Delete compiler-flag '-fPIC'
-       -no-readline    Without GNU-Readline supports
+       -no-readline    Without GNU-Readline supports (default is enabled, dependence: libreadline)
        -no-optimize    Without compiler optimize
        -clang          Use Clang instead of GCC
        -version        Show version of the cloned LMFSWS source
        -no-pie         Build ELF EXEC Object for LMFSWS not ELF PIE-EXEC Object
        -strip          Automatic strip
+       -enable-login   Enable secure section in LMFSWS (default is disabled, dependence: openssl)
        -help           Show this message
     "
 }
+
+enable_login=$(getconfig enable_login)
 
 function _start(){
     main=no
@@ -98,11 +108,16 @@ function _start(){
             DLNAME=".dll"
             LIBNAME="bin"
             OBJECT="LMFSWS.exe"
+        elif [ "$i" = "-enable-login" ]; then
+            enable_login=yes
+            CFLAGS="$CFLAGS -DENABLE_LOGIN"
         elif [ "$i" = "-help" ]; then
             _help
+            exit 0
         else
             echo -e "\033[91;1mError\033[0m Unrecognized option \`$i'"
             _help
+            exit 127
         fi
     done
 
@@ -151,18 +166,18 @@ function part_main(){
     # MAIN
     tell "for i in $ALLCFILES
 do
-    ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/"'$i'" -o "'$i'".o -c
+    ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/"'$i'" -o "'$i'".o -c -DPREFIX=\"$PREFIX\"
 done"
 
     for i in $ALLCFILES
     do
-        run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c
+        run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c -DPREFIX=\"$PREFIX\"
     done
 
-    run ${CC} $EXTRA_CFLAGS $LDFLAGS *.o $SOFLAGS -o libLMFSWS"$DLNAME"
+    run ${CC} $EXTRA_CFLAGS $LDFLAGS *.o $SOFLAGS -o libLMFSWS"$DLNAME" -Wno-unused-command-line-argument
     run ${AR} rcs libLMFSWS.a *.o
 
-    run ${CC} $CFLAGS -I.. $LDFLAGS ../src/LMFSWorkStation.c $LINK_FILE -o $OBJECT
+    run ${CC} $CFLAGS -I.. $LDFLAGS ../src/LMFSWorkStation.c $LINK_FILE -o $OBJECT 
 }
 
 function part_module(){
@@ -175,16 +190,22 @@ function part_module(){
     run ${CP} ../module/*.mode modules
 
     ## Input - Required
-    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME}
+    run ${CC} ../module/Input.c ${SOFLAGS} -o modules/Input.so ${LIBS} $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\"
 
     ## Command Line - Required
-    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME}
+    run ${CC} ../module/cmdline.c ${SOFLAGS} -o modules/cmdline.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\"
 
     ## Extenal Modules User Mode Loader - Required
-    run ${CC} ../module/register.c $LINK_FILE ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME}
+    run ${CC} ../module/register.c $LINK_FILE ${SOFLAGS} -o modules/register.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\"
 
     ## Core commands - Required
-    run ${CC} ../module/tools.c $LINK_FILE ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME}
+    run ${CC} ../module/tools.c $LINK_FILE ${SOFLAGS} -I.. -o modules/tools.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\"
+
+    if [ x$enable_login = x"yes" ]; then
+        # Security section
+        run ${CP} ../extra/login.mode modules
+        run ${CC} ../extra/login.c $LINK_FILE ${SOFLAGS} -o modules/login.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\" -lcrypto -Wno-deprecated-declarations -Wno-pointer-sign
+    fi
 
 }
 
@@ -194,18 +215,25 @@ function part_install(){
         run cd build
     fi
 
-    runNoEXIT mkdir -p $PREFIX/lib/LMFSWSModules
-    runNoEXIT mkdir -p $PREFIX/bin
-    runNoEXIT mkdir -p $PREFIX/share/licenses/LMFSWS
-    run ${CP} -rf modules/* $PREFIX/lib/LMFSWSModules
-    run ${CP} -rf *.a $PREFIX/lib
-    run ${CP} -rf *"$DLNAME" $PREFIX/$LIBNAME
-    run ${CP} -rf ${OBJECT} $PREFIX/bin
-    run ${CHMOD} 755 $PREFIX/bin/${OBJECT}
-    run ${CP} -rf LICENSE $PREFIX/share/licenses/LMFSWS
+    runNoEXIT mkdir -p "$PREFIX"/lib/LMFSWSModules
+    runNoEXIT mkdir -p "$PREFIX"/bin
+    runNoEXIT mkdir -p "$PREFIX"/share/licenses/LMFSWS
+    if [ x$enable_login = x"yes" ]; then
+        runNoEXIT mkdir -p "$PREFIX"/etc/lmfsws.d
+        runNoEXIT touch "$PREFIX"/etc/lmfsws.d/shadow
+        runNoEXIT chmod 0644 "$PREFIX"/etc/lmfsws.d/shadow
+        echo "echo "$($ID -u)": > $PREFIX/etc/lmfsws.d/shadow"
+        echo $($ID -u): > $PREFIX/etc/lmfsws.d/shadow
+    fi
+    run ${CP} -rf modules/* "$PREFIX"/lib/LMFSWSModules
+    run ${CP} -rf *.a "$PREFIX"/lib
+    run ${CP} -rf *"$DLNAME" "$PREFIX"/$LIBNAME
+    run ${CP} -rf ${OBJECT} "$PREFIX"/bin
+    run ${CHMOD} 755 "$PREFIX"/bin/${OBJECT}
+    run ${CP} -rf LICENSE "$PREFIX"/share/licenses/LMFSWS
 
-    runNoEXIT mkdir -p $PREFIX/include/LMFSWS
-    run ${CP} -rf ../include/* $PREFIX/include/LMFSWS
+    runNoEXIT mkdir -p "$PREFIX"/include/LMFSWS
+    run ${CP} -rf ../include/* "$PREFIX"/include/LMFSWS
 }
 
 _start "$@"

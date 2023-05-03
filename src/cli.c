@@ -407,31 +407,18 @@ extern int InitLMFSWS(){
     L_s->rps=rpS;
     L_s->fla=FuncL;
     L_s->ml=ModL;
-    int status;
-    status=LoadModuleByName("Input");
-    if(status==-1){
-        fprintf(stderr, "LMFS WorkStation has crashed\n");
-        return -1;
-    }
+    LoadModuleByName("Input");
     if(regist("Input")==-1) return -1;
-    status=LoadModuleByName("cmdline");
-    if(status==-1){
-        fprintf(stderr, "LMFS WorkStation has crashed\n");
-        return -1;
-    }
+    LoadModuleByName("cmdline");
     if(regist("cmdline")==-1) return -1;
-    status=LoadModuleByName("tools");
-    if(status==-1){
-        fprintf(stderr, "LMFS WorkStation has crashed\n");
-        return -1;
-    }
+    LoadModuleByName("tools");
     if(regist("tools")==-1) return -1;
-    status=LoadModuleByName("register");
-    if(status==-1){
-        fprintf(stderr, "LMFS WorkStation has crashed\n");
-        return -1;
-    }
+    LoadModuleByName("register");
     if(regist("register")==-1) return -1;
+#ifdef ENABLE_LOGIN
+    LoadModuleByName("login");
+    if(regist("login")==-1) return -1;
+#endif
     return 0;
 }
 
@@ -494,5 +481,16 @@ extern void CloseArgPool(){
 
 extern void* get_result(){
     return result_p;
+}
+
+extern void CleanMemory(){
+    CloseArgPool();
+    CloseModules();
+    CloseFuncPool();
+}
+
+extern void ForceQuit(int status){
+    CleanMemory();
+    exit(status);
 }
 

@@ -94,9 +94,7 @@ int main(int argc, char* argv[]){
     else{
         callArgs(argc, argv);
     }
-    CloseArgPool();
-    CloseModules();
-    CloseFuncPool();
+    CleanMemory();
     return 0;
 }
 

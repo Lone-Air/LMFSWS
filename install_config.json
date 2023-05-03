@@ -1,0 +1,28 @@
+{
+    "manifest": {
+        "prefix": "/usr/local",
+        "cp": "cp",
+        "chmod": "chmod",
+        "id": "id",
+        "ar": "ar",
+        "cc": "gcc",
+        "cflags": "-std=c11 -I../include -Wall -Wno-deprecated-non-prototype",
+        "extra_cflags": "-fPIC",
+        "optimize": "-O3",
+        "dependences": "-DHAVE_READLINE -lreadline",
+        "ldflags": "-pie -fPIE -ldl",
+        "soflags": "-shared -ldl",
+        "module_extra_flags": "",
+        "shared_lib": "libLMFSWS.so",
+        "requires": "-lLMFSWS",
+        "compile_output": "LMFSWS",
+        "windows_flags": "",
+        "dynamic_libraries_suffix": ".so",
+        "library_name_prefix": "lib",
+        "enable_login": "no"
+    },
+
+    "install_config_loader_settings":{
+        "debug": false
+    }
+}

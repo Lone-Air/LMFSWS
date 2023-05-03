@@ -85,5 +85,8 @@ extern int InitLMFSWS();
 
 extern void* get_result();
 
+extern void CleanMemory();
+extern void ForceQuit(int);
+
 #endif
 
