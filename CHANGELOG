@@ -1,4 +1,9 @@
 --- 5/4/2023
+ -- Patch 1.8-1
+  - Fixed: fatal errors in login.c
+  * Changes: Use /usr instead of /usr/local in install_config.json
+
+--- 5/4/2023
  -- Version 1.8
   + Feature: Security module: login (optional at compiling)
   - Removed: Nonsense text when LMFSWS initialization crashes

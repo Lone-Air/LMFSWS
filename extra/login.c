@@ -29,6 +29,16 @@
   #define SIZE(x) sizeof(x)/sizeof(x[0])
 #endif
 
+#if !(__USE_MISC || (defined __USE_XOPEN && !defined __USE_XOPEN2K))
+extern char *getpass (const char *__prompt) __nonnull ((1));
+#endif
+
+#if !(defined __USE_XOPEN_EXTENDED || defined __USE_XOPEN2K)
+extern ssize_t readlink (const char *__restrict __path,
+			 char *__restrict __buf, size_t __len)
+     __THROW __nonnull ((1, 2)) __wur;
+#endif
+
 int mod_helper(){
     printf(
            "LMFS WorkStation - Security Module\n"

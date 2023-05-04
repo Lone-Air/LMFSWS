@@ -1,6 +1,6 @@
 {
     "manifest": {
-        "prefix": "/usr/local",
+        "prefix": "/usr",
         "cp": "cp",
         "chmod": "chmod",
         "id": "id",
