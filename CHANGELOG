@@ -1,4 +1,9 @@
 --- 5/4/2023
+ -- Version 1.8.2
+  + Feature: deluser command in login module
+  * Attention: login module is stable now
+
+--- 5/4/2023
  -- Patch 1.8-2
   - Fixed: fatal errors in login.c
 

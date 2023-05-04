@@ -43,6 +43,7 @@ int mod_helper(){
     printf(
            "LMFS WorkStation - Security Module\n"
            "    chpasswd <user>\n"
+           "    deluser <user>"
           );
     return 0;
 }
@@ -316,8 +317,63 @@ double change_passwd(int argc, char* argv[]){
     return 0;
 }
 
+double del_user(int argc, char* argv[]){
+    if(argc<2){
+        fprintf(stderr, "\033[91;1mError\033[0m: require an argument\n");
+        return -1;
+    }
+    if(access(SHADOWPATH, F_OK)==0){
+        struct stat file;
+        stat(SHADOWPATH, &file);
+        uid_t owner=file.st_uid;
+        if(owner!=getuid()){
+            fprintf(stderr, "\033[91;1mSecurity Alert\033[0m: you arenot the owner of %s, please contact the installer of LMFSWS for help\n", SHADOWPATH);
+            return -1;
+        }
+        if(!(0<=sToi(argv[1])&&sToi(argv[1])<=65535)){
+            fprintf(stderr, "\033[91;1mFailed\033[0m: Illegal uid\n");
+            return -1;
+        }
+        uid_t uid=sToi(argv[1]);
+        shadow_t sha=parseSha(SHADOWPATH);
+        bool deleted=false;
+        shadow_t new;
+        new.codes=(char**)calloc(1, sizeof(char*));
+        new.users=(int*)calloc(1, sizeof(int));
+        new.codel=0;
+        new.userl=0;
+        for(int i=0;i<sha.codel;i++){
+            if(sha.users[i]==uid){
+                deleted=true;
+                continue;
+            }
+            new.codes=(char**)realloc(new.codes, (++new.codel+1)*sizeof(char*));
+            if(sha.codes[i]!=NULL){
+                new.codes[i]=(char*)calloc(strlen(sha.codes[i])+1, sizeof(char));
+                strcpy(new.codes[i], sha.codes[i]);
+            }
+            else
+              new.codes[i]=NULL;
+            new.users=(int*)realloc(new.users, (++new.userl+1)*sizeof(int));
+            new.users[i]=sha.users[i];
+        }
+        if(!deleted){
+            fprintf(stderr, "\033[91;1mError\033[0m: uid %d isnot in shadow\n", uid);
+        }
+        destroySha(sha);
+        writeSha(new, SHADOWPATH);
+        destroySha(new);
+        fprintf(stdout, "Success\n");
+    }
+    else{
+        fprintf(stderr, "\033[91;1mSecurity Section - Fatal Error\033[0m: Cannot access %s\n", SHADOWPATH);
+        return -1;
+    }
+    return 0;
+}
 FuncList Regist[]={
       {"chpasswd", 1, change_passwd, NULL},
+      {"deluser", 1, del_user, NULL},
       {NULL, -1, NULL, NULL}
 };
 
