@@ -1,8 +1,8 @@
 "LMFS WorkStation - LMFS. It's a free(libre) software - "
 #include <VERSION>
-" [BUILD "
+" [BUILD on "
 #ifdef __GNUC__
-"GCC "
+"(GNU C) "
 #endif
 __VERSION__
 #if defined(__linux__)
