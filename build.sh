@@ -57,6 +57,7 @@ function _help(){
        -no-pie         Build ELF EXEC Object for LMFSWS not ELF PIE-EXEC Object
        -strip          Automatic strip
        -enable-login   Enable secure section in LMFSWS (default is disabled, dependence: openssl)
+       -sanitizer      Use address sanitizer
        -help           Show this message
     "
 }
@@ -68,7 +69,7 @@ function _start(){
     module=no
     install=no
 
-    if [ -z "$@" ]; then
+    if [ x"$@" = x"" ]; then
         main=yes
         module=yes
         install=yes
@@ -88,6 +89,7 @@ function _start(){
             install=yes
         elif [ "$i" = "-debug" ]; then
             CFLAGS="$CFLAGS -ggdb3"
+            OPT=""
         elif [ "$i" = "-version" ]; then
             cat VERSION
         elif [ "$i" = "-no-readline" ]; then
@@ -111,6 +113,8 @@ function _start(){
         elif [ "$i" = "-enable-login" ]; then
             enable_login=yes
             CFLAGS="$CFLAGS -DENABLE_LOGIN"
+        elif [ "$i" = "-sanitizer" ]; then
+            CFLAGS="$CFLAGS -fsanitize=address,leak -fno-omit-frame-pointer"
         elif [ "$i" = "-help" ]; then
             _help
             exit 0
@@ -222,8 +226,8 @@ function part_install(){
         runNoEXIT mkdir -p "$PREFIX"/etc/lmfsws.d
         runNoEXIT touch "$PREFIX"/etc/lmfsws.d/shadow
         runNoEXIT chmod 0644 "$PREFIX"/etc/lmfsws.d/shadow
-        echo "echo "$($ID -u)": > $PREFIX/etc/lmfsws.d/shadow"
-        echo $($ID -u): > $PREFIX/etc/lmfsws.d/shadow
+        echo "echo "$($ID -u)":x > $PREFIX/etc/lmfsws.d/shadow"
+        echo $($ID -u):x > $PREFIX/etc/lmfsws.d/shadow
     fi
     run ${CP} -rf modules/* "$PREFIX"/lib/LMFSWSModules
     run ${CP} -rf *.a "$PREFIX"/lib

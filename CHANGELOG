@@ -1,4 +1,8 @@
 --- 5/4/2023
+ -- Patch 1.8-2
+  - Fixed: fatal errors in login.c
+
+--- 5/4/2023
  -- Patch 1.8-1
   - Fixed: fatal errors in login.c
   * Changes: Use /usr instead of /usr/local in install_config.json

@@ -96,15 +96,15 @@ shadow_t parseSha(const char* fp){
         if(ch!='\n'){
             if(ch!=':'){
 save_char:
-                buf=(char*)realloc(buf, (++bl)*sizeof(char));
+                buf=(char*)realloc(buf, (++bl+1)*sizeof(char));
                 buf[bl-1]=ch;
             }
             else{
                 if(!id_fin){
-                    buf=(char*)realloc(buf, (++bl)*sizeof(char));
+                    buf=(char*)realloc(buf, (++bl+1)*sizeof(char));
                     buf[bl-1]='\0';
                     id_fin=true;
-                    userl=(int*)realloc(userl, (++ul)*sizeof(int));
+                    userl=(int*)realloc(userl, (++ul+1)*sizeof(int));
                     userl[ul-1]=sToi(buf);
                     if(userl[ul-1]==-1){
                         fprintf(stderr, "\033[91;1mSecurity Section - Failed: illegal uid at line %u\n", ln);
@@ -120,10 +120,10 @@ save_char:
         }
         else{
 save_code:
-            buf=(char*)realloc(buf, (++bl)*sizeof(char));
+            buf=(char*)realloc(buf, (++bl+1)*sizeof(char));
             buf[bl-1]='\0';
-            codel=(char**)realloc(codel, (++cl)*sizeof(char*));
-            codel[cl-1]=calloc(strlen(buf), sizeof(char));
+            codel=(char**)realloc(codel, (++cl+1)*sizeof(char*));
+            codel[cl-1]=calloc(strlen(buf)+1, sizeof(char));
             strcpy(codel[cl-1], buf);
             free(buf);
             buf=(char*)calloc(1, sizeof(char));
@@ -152,7 +152,7 @@ static int writeSha(shadow_t sha, const char* fp){
         return -1;
     }
     while(sha.codes[counter]!=NULL && sha.users[counter]!=-1){
-        char* text=(char*)calloc(strlen(sha.codes[counter])+10, sizeof(char));
+        char* text=(char*)calloc(strlen(sha.codes[counter])+15, sizeof(char));
         sprintf(text, "%d", sha.users[counter]);
         strcat(text, ":");
         strcat(text, sha.codes[counter]);
@@ -202,7 +202,7 @@ int mod_init(LMFSWS_State* L){
         bool logged=false;
         while(sha.codes[counter]!=NULL){
             if(sha.users[counter]==uid){
-                if(strcmp(sha.codes[counter], "")==0){
+                if(strcmp(sha.codes[counter], "x")==0){
                     logged=true;
                     break;
                 }
@@ -214,7 +214,7 @@ int mod_init(LMFSWS_State* L){
                 SHA256_Final(code_sha256, &ctx);
                 char code_hex[128]={0};
                 for(int i=0; i<strlen(code_sha256); i++){
-                    sprintf(code_hex+i*2, "%02x", code_sha256[i]);
+                    snprintf(code_hex+i*2, 3, "%02x", code_sha256[i]);
                 }
                 if(strcmp(code_hex, sha.codes[counter])!=0){
                     fprintf(stderr, "\033[91;1mSecurity Alert\033[0m: Authentication failed\n");
@@ -269,9 +269,11 @@ double change_passwd(int argc, char* argv[]){
             SHA256_Final(code_sha256, &ctx);
             if(strcmp(code, "")!=0){
                 for(int i=0; i<strlen(code_sha256); i++){
-                    sprintf(code_hex+i*2, "%02x", code_sha256[i]);
+                    snprintf(code_hex+i*2, 3, "%02x", code_sha256[i]);
                 }
             }
+            else
+              strcpy(code_hex, "x");
             free(code_sha256);
         }
         else{
@@ -279,10 +281,14 @@ double change_passwd(int argc, char* argv[]){
             return -1;
         }
         bool set=false;
+        if(!(0<=sToi(argv[1])&&sToi(argv[1])<=65535)){
+            fprintf(stderr, "\033[91;1mFailed\033[0m: Illegal uid\n");
+            return -1;
+        }
         while(sha.codes[counter]!=NULL){
             if(sha.users[counter]==sToi(argv[1])){
                 free(sha.codes[counter]);
-                sha.codes[counter]=(char*)calloc(strlen(code_hex), sizeof(char));
+                sha.codes[counter]=(char*)calloc(strlen(code_hex)+1, sizeof(char));
                 strcpy(sha.codes[counter], code_hex);
                 set=true;
                 break;
@@ -290,11 +296,11 @@ double change_passwd(int argc, char* argv[]){
             counter++;
         }
         if(!set){
-            sha.users=(int*)realloc(sha.users, ++sha.userl);
+            sha.users=(int*)realloc(sha.users, (++sha.userl+1)*sizeof(int));
             sha.users[sha.userl-2>=0?sha.userl-2:0]=sToi(argv[1]);
             sha.users[sha.userl-1>=0?sha.userl-1:0]=-1;
-            sha.codes=(char**)realloc(sha.codes, ++sha.codel);
-            sha.codes[sha.codel-2>=0?sha.codel-2:0]=(char*)calloc(strlen(code_hex), sizeof(char));
+            sha.codes=(char**)realloc(sha.codes, (++sha.codel+1)*sizeof(char*));
+            sha.codes[sha.codel-2>=0?sha.codel-2:0]=(char*)calloc(strlen(code_hex)+1, sizeof(char));
             strcpy(sha.codes[sha.codel-2>=0?sha.codel-2:0], code_hex);
             sha.codes[sha.codel-1>=0?sha.codel-1:0]=NULL;
         }
