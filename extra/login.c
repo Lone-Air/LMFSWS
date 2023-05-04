@@ -43,7 +43,7 @@ int mod_helper(){
     printf(
            "LMFS WorkStation - Security Module\n"
            "    chpasswd <user>\n"
-           "    deluser <user>"
+           "    deluser <user>\n"
           );
     return 0;
 }
