@@ -29,5 +29,7 @@ __VERSION__
 #elif defined __PPC64__
 " PowerPC64"
 #endif
-"]"
+" (Compiled on "
+__DATE__
+")]"
 "\nUse 'help <modules>' for help. Use 'printloaded' to see modules loaded when starting. Use 'list_functions' to see what functions were preloaded."
