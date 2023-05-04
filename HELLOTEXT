@@ -1,4 +1,33 @@
 "LMFS WorkStation - LMFS. It's a free(libre) software - "
 #include <VERSION>
-" [BUILD "__VERSION__"]"
+" [BUILD "
+#ifdef __GNUC__
+"GCC "
+#endif
+__VERSION__
+#if defined(__linux__)
+" on linux"
+#elif defined(__unix__)
+" on unix"
+#endif
+#ifdef __WIN32__
+" on win32"
+#endif
+#ifdef __APPLE__
+" on darwin"
+#endif
+#if defined __x86_64__
+" x86-64"
+#elif defined __i386__
+" i386"
+#elif defined __aarch64__
+" aarch64"
+#elif defined __arm__
+" arm"
+#elif defined __PPC__
+" PowerPC"
+#elif defined __PPC64__
+" PowerPC64"
+#endif
+"]"
 "\nUse 'help <modules>' for help. Use 'printloaded' to see modules loaded when starting. Use 'list_functions' to see what functions were preloaded."
