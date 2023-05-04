@@ -1,4 +1,8 @@
 --- 5/4/2023
+ -- Version 1.8.3
+  + Feature: if the permission of shadow isnot 0644, LMFSWS will force quit immediately
+
+--- 5/4/2023
  -- Version 1.8.2
   + Feature: deluser command in login module
   * Attention: login module is stable now

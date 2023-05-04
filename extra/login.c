@@ -197,6 +197,7 @@ int mod_init(LMFSWS_State* L){
         uid_t uid=getuid();
         if(mod&S_IXUSR || mod&S_IWGRP || mod&S_IXGRP || mod&S_IWOTH || mod&S_IXOTH){
             fprintf(stderr, "\033[91;1mSecurity Alert\033[0m: permission of %s is not 0644(-rw-r--r--)\n", SHADOWPATH);
+            ForceQuit(1);
         }
         shadow_t sha=parseSha(SHADOWPATH);
         int trys=0;
