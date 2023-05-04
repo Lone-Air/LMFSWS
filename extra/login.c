@@ -259,6 +259,10 @@ double change_passwd(int argc, char* argv[]){
             fprintf(stderr, "\033[91;1mSecurity Alert\033[0m: you arenot the owner of %s, please contact the installer of LMFSWS for help\n", SHADOWPATH);
             return -1;
         }
+        if(!(0<=sToi(argv[1])&&sToi(argv[1])<=65535)){
+            fprintf(stderr, "\033[91;1mFailed\033[0m: Illegal uid\n");
+            return -1;
+        }
         shadow_t sha=parseSha(SHADOWPATH);
         unsigned counter=0;
         char* code=getpass("New password: ");
@@ -283,10 +287,6 @@ double change_passwd(int argc, char* argv[]){
             return -1;
         }
         bool set=false;
-        if(!(0<=sToi(argv[1])&&sToi(argv[1])<=65535)){
-            fprintf(stderr, "\033[91;1mFailed\033[0m: Illegal uid\n");
-            return -1;
-        }
         while(sha.codes[counter]!=NULL){
             if(sha.users[counter]==sToi(argv[1])){
                 free(sha.codes[counter]);
