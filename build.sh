@@ -41,7 +41,7 @@ LIBNAME=$(getconfig library_name_prefix)
 echo -e "\e[91;1mYou should run this script under the project root\e[0m"
 
 function _help(){
-    echo "LMFS WorkStation Complation Script - 2022
+    echo "LMFS WorkStation Complation Script - 2022-2023
     Usage: build.sh [options...]
     Options:
        -default        Enable all
