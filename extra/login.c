@@ -373,9 +373,9 @@ double del_user(int argc, char* argv[]){
     }
     return 0;
 }
+
 FuncList Regist[]={
       {"chpasswd", 1, change_passwd, NULL},
       {"deluser", 1, del_user, NULL},
       {NULL, -1, NULL, NULL}
 };
-
