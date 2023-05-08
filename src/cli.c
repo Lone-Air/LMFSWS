@@ -24,14 +24,24 @@ ArgumentsList* DefaultArgPoolHead;
 
 extern double help_LMFSWS(int argc, char** argv){
     ArgumentsList* copy=DefaultArgPoolHead;
-    fprintf(stdout, "LMFSWorkStation - LMFS. Org. - "
+    fprintf(stdout, "LMFSWorkStation - LMFS org. - "
 #include "VERSION"
             "\nUsage: %s [Options] [Files]\nOptions:\n", argv[0]);
     while(copy!=NULL){
-        if(copy->arg.flagShort!='\0')
-          fprintf(stdout, "    -%c --%s\t%s\n", copy->arg.flagShort, copy->arg.flagFull, copy->arg.disc);
+        if(strcmp(copy->arg.desc, "")!=0)
+          if(copy->arg.flagShort!='\0'&&strcmp(copy->arg.flagFull, "")!=0)
+            fprintf(stdout, "    -%c --%s\t%s\n", copy->arg.flagShort, copy->arg.flagFull, copy->arg.desc);
+          else if(copy->arg.flagShort!='\0'&&strcmp(copy->arg.flagFull, "")==0)
+            fprintf(stdout, "    -%c\t%s\n", copy->arg.flagShort, copy->arg.desc);
+          else
+            fprintf(stdout, "    --%s\t%s\n", copy->arg.flagFull, copy->arg.desc);
         else
-          fprintf(stdout, "    --%s\t%s\n", copy->arg.flagFull, copy->arg.disc); 
+          if(copy->arg.flagShort!='\0'&&strcmp(copy->arg.flagFull, "")!=0)
+            fprintf(stdout, "    -%c --%s\t<no description>\n", copy->arg.flagShort, copy->arg.flagFull);
+          else if(copy->arg.flagShort!='\0'&&strcmp(copy->arg.flagFull, "")==0)
+            fprintf(stdout, "    -%c\t<no description>\n", copy->arg.flagShort);
+          else
+            fprintf(stdout, "    --%s\t<no description>\n", copy->arg.flagFull);
         copy=copy->next;
     }
     return 0;
@@ -45,7 +55,7 @@ extern void InitArgPool(){
     DefaultArgPool->next=(ArgumentsList*)calloc(1, sizeof(ArgumentsList));
     DefaultArgPool->arg.flagShort='h';
     DefaultArgPool->arg.flagFull="help";
-    DefaultArgPool->arg.disc="Show this help";
+    DefaultArgPool->arg.desc="Show this help";
     DefaultArgPool->arg.ArgType=5;
     DefaultArgPool->arg.callf=(_Function)help_LMFSWS;
 }
@@ -56,10 +66,20 @@ extern void RegisterArg(Argument Argu){
     DefaultArgPool=DefaultArgPool->next;
     DefaultArgPool->next=NULL;
     DefaultArgPool->arg.flagShort=Argu.flagShort;
-    DefaultArgPool->arg.flagFull=(char*)calloc(strlen(Argu.flagFull)+1, sizeof(char));
-    strcpy(DefaultArgPool->arg.flagFull, Argu.flagFull);
-    DefaultArgPool->arg.disc=(char*)calloc(strlen(Argu.disc)+1, sizeof(char));
-    strcpy(DefaultArgPool->arg.disc, Argu.disc);
+    if(Argu.flagFull!=NULL){
+        DefaultArgPool->arg.flagFull=(char*)calloc(strlen(Argu.flagFull)+1, sizeof(char));
+        strcpy(DefaultArgPool->arg.flagFull, Argu.flagFull);
+    }
+    else{
+        DefaultArgPool->arg.flagFull=(char*)calloc(1, sizeof(char));
+    }
+    if(Argu.desc!=NULL){
+        DefaultArgPool->arg.desc=(char*)calloc(strlen(Argu.desc)+1, sizeof(char));
+        strcpy(DefaultArgPool->arg.desc, Argu.desc);
+    }
+    else{
+        DefaultArgPool->arg.desc=(char*)calloc(1, sizeof(char));
+    }
     DefaultArgPool->arg.ArgType=Argu.ArgType;
     DefaultArgPool->arg.callf=Argu.callf;
 }
@@ -472,7 +492,7 @@ extern void CloseArgPool(){
     while(DefaultArgPool->last!=NULL){
         if(DefaultArgPool->last!=NULL){
             free(DefaultArgPool->arg.flagFull);
-            free(DefaultArgPool->arg.disc);
+            free(DefaultArgPool->arg.desc);
             DefaultArgPool=DefaultArgPool->last;
             free(DefaultArgPool->next);
         }

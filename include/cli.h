@@ -14,7 +14,7 @@
 typedef struct Argument{
     char flagShort;
     char* flagFull;
-    char* disc;
+    char* desc;
     short ArgType; // 1, 2, 3, 4, 5
     /*
      * 1: --xxx="a, b, c" -> xxx, {"a", "b", "c"}

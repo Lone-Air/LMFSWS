@@ -15,6 +15,31 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+static double _v(int argc, char** argv){
+    printf(
+           "LMFSWorkStation - LMFS org. - "
+#include "VERSION"
+           "\n"
+           "INSTALL_PREFIX=%s"
+           "\n"
+           "LIBRARY_PATH=%s"
+           "\n"
+           "BINARY_PATH=%s"
+           "\n"
+           "LMFSWS_MORULE_DIR=%s"
+           "\n"
+           "LMFSWS_MODULE_PATH=%s"
+           "\nCompilation flags: %s"
+           "\n"
+           "SHADOW_PATH=%s"
+           "\n"
+           "ETC_PATH=%s"
+           "\n",
+           PREFIX, PREFIX LIBNAME, PREFIX BINNAME, MODNAME, MODULE, COMPILATION, SHADOWPATH, ETCNAME
+           );
+    return 0;
+}
+
 static double _run_command(int argc, char** argv){
     if(argc>=1)
       doLMFSWSCmd(argv[0]);
@@ -22,7 +47,7 @@ static double _run_command(int argc, char** argv){
 }
 
 static double _get_version(int argc, char** argv){
-    fprintf(stdout, "LMFSWorkStation - LMFS Org. - "
+    fprintf(stdout, "LMFSWorkStation - LMFS org. - "
 #include "VERSION"
             "\n");
     exit(0);
@@ -67,8 +92,9 @@ int main(int argc, char* argv[]){
     InitArgPool();
     RegisterArg((Argument){'\0', "run", "Run file --run=file1,file2", 1, run});
     RegisterArg((Argument){'\0', "runfiles", "Run file --runfiles file1 file2", 2, run});
-    RegisterArg((Argument){'v', "version", "Get version of LMFSWorkStation", 3, _get_version});
+    RegisterArg((Argument){'\0', "version", "Get version of LMFSWorkStation", 3, _get_version});
     RegisterArg((Argument){'c', "command", "Execute a command in LMFSWorkStation without command line", 4, _run_command});
+    RegisterArg((Argument){'v', NULL, "Output LMFSWS configuration information", 3, _v});
     if(argc==1){
         fprintf(stdout,
 #include "HELLOTEXT"

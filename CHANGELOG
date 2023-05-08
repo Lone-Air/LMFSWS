@@ -1,3 +1,8 @@
+--- 5/8/2023
+ -- Version 1.8.5
+  + Feature: Better cli arguments register (support register without long flag or description)
+  + Feature: The new -v command-line argument is used to print LMFSWS compilation information
+
 --- 5/4/2023
  -- Version 1.8.4
   + Feature: Add compiler information at LMFSWS HELLOTEXT
