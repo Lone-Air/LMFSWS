@@ -10,9 +10,11 @@
 #define LIBNAME "/lib/"
 #define BINNAME "/bin/"
 
+#define ETCNAME PREFIX"/etc/lmfsws.d/"
 #ifdef ENABLE_LOGIN
-  #define ETCNAME PREFIX"/etc/lmfsws.d/"
   #define SHADOWPATH ETCNAME"/shadow"
+#else
+  #define SHADOWPATH ""
 #endif
 
 #define MODNAME LIBNAME"/LMFSWSModules/"
