@@ -26,16 +26,17 @@ static double _v(int argc, char** argv){
            "\n"
            "BINARY_PATH=%s"
            "\n"
+           "ETC_PATH=%s"
+           "\n"
            "LMFSWS_MORULE_DIR=%s"
            "\n"
            "LMFSWS_MODULE_PATH=%s"
-           "\nCompilation flags: %s"
            "\n"
            "SHADOW_PATH=%s"
            "\n"
-           "ETC_PATH=%s"
+           "COMPILATION_FLAGS=%s"
            "\n",
-           PREFIX, PREFIX LIBNAME, PREFIX BINNAME, MODNAME, MODULE, COMPILATION, SHADOWPATH, ETCNAME
+           PREFIX, PREFIX LIBNAME, PREFIX BINNAME, ETCNAME, MODNAME, MODULE, SHADOWPATH, COMPILATION
            );
     return 0;
 }
