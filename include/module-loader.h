@@ -10,6 +10,8 @@
 
 #include "config.h"
 
+#define _GNU_SOURCE
+
 #include <dlfcn.h>
 
 typedef struct ArgList{

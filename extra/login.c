@@ -172,7 +172,6 @@ static void destroySha(shadow_t sha){
         free(*sha.codes);
         sha.codes++;
     }
-    free(sha.codes);
 }
 
 static bool islink(const char* file_p){

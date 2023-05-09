@@ -14,6 +14,8 @@
 #include <string.h>
 #include <stdint.h>
 
+#include <dlfcn.h>
+
 #ifdef __WIN32__
   #include <io.h>
   #define getcwd _getcwd

@@ -186,7 +186,7 @@ done"
     run ${CC} $EXTRA_CFLAGS $LDFLAGS *.o $SOFLAGS -o libLMFSWS"$DLNAME" -Wno-unused-command-line-argument
     run ${AR} rcs libLMFSWS.a *.o
 
-    run ${CC} $CFLAGS -I.. $LDFLAGS ../src/LMFSWorkStation.c $LINK_FILE -o $OBJECT -DCOMPILATION=\""$flags"\" -DPREFIX=\"$PREFIX\"
+    run ${CC} $CFLAGS -I.. $LDFLAGS ../src/LMFSWorkStation.c $LINK_FILE -ldl -o $OBJECT -DCOMPILATION=\""$flags"\" -DPREFIX=\"$PREFIX\"
 }
 
 function part_module(){

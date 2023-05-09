@@ -8,6 +8,7 @@
 
 #include "module-loader.h"
 #include "command-register.h"
+#include "cli.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,7 +53,8 @@ char* Generator(const char* part, int state){
     return NULL;
 }
 
-int mod_init(){
+int mod_init(LMFSWS_State* L){
+    UseState(L);
     rl_completion_entry_function=Generator;
     return 0;
 }
