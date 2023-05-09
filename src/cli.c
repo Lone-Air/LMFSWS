@@ -361,7 +361,7 @@ extern double doLMFSWSCmd(const char* data){
                     _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
                     char* err=dlerror();
                     if(err!=NULL){
-                        fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s\nMaybe 'exthelp' will be successful\n", err);
+                        fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s", err);
                         return -1;
                     }
                     helper();
