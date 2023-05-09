@@ -58,6 +58,20 @@ extern int InitModulePool(){
     return 1;
 }
 
+static bool check_config(char* text, const char* target){
+    short count=0;
+    short match=0;
+    while(text[count]!='\0'){
+        if(text[count]!=target[match] && text[count]!='\n')
+          break;
+        if(text[count]==target[match])
+          match++;
+        if(match>=strlen(target)-1) return true;
+        count++;
+    }
+    return false;
+}
+
 extern int LoadModuleByName(const char* mod_name){
     if(FindModule(mod_name)!=-1){
         fprintf(stderr, "\033[95;1mWarning\033[0m: The module which named `%s' had been loaded\n", mod_name);
@@ -113,20 +127,46 @@ extern int LoadModuleByName(const char* mod_name){
             goto finish;
         }
         cfg=fopen(UNDERMOD, "r");
+        const char* _p=UNDERNAME;
         if(cfg!=NULL){
             cache=load(cfg);
-            dlh=dlopen(UNDERNAME, (strcmp(cache, "LAZY\n")==0 || strcmp(cache, "LAZY")==0)?RTLD_LAZY:RTLD_NOW);
+            if(check_config(cache, "LAZY"))
+              dlh=dlopen(_p, RTLD_LAZY);
+            else if(check_config(cache, "NOW"))
+              dlh=dlopen(_p, RTLD_NOW);
+            else if(check_config(cache, "GLOBAL"))
+              dlh=dlopen(_p, RTLD_GLOBAL);
+            else if(check_config(cache, "LOCAL"))
+              dlh=dlopen(_p, RTLD_LOCAL);
+            else{
+                fprintf(stderr, "\033[91;1mFatal Error\033[0m: Invalid mode for module %s\n", mod_name);
+                err=1;
+                goto finish;
+            }
         }else{
-            dlh=dlopen(UNDERNAME, RTLD_NOW);
+            dlh=dlopen(_p, RTLD_NOW);
         }
     }else{
         cfg=fopen(SYSMOD, "r");
+        const char* _p=SYSPATH;
         if(cfg!=NULL){
             cache=load(cfg);
-            dlh=dlopen(SYSPATH, (strcmp(cache, "LAZY\n")==0 || strcmp(cache, "LAZY")==0)?RTLD_LAZY:RTLD_NOW);
+            if(check_config(cache, "LAZY"))
+              dlh=dlopen(_p, RTLD_LAZY);
+            else if(check_config(cache, "NOW"))
+              dlh=dlopen(_p, RTLD_NOW);
+            else if(check_config(cache, "GLOBAL"))
+              dlh=dlopen(_p, RTLD_GLOBAL);
+            else if(check_config(cache, "LOCAL"))
+              dlh=dlopen(_p, RTLD_LOCAL);
+            else{
+                fprintf(stderr, "\033[91;1mFatal Error\033[0m: Invalid mode for module %s\n", mod_name);
+                err=1;
+                goto finish;
+            }
         }
         else{
-            dlh=dlopen(SYSPATH, RTLD_NOW);
+            dlh=dlopen(_p, RTLD_NOW);
         }
     }
 
