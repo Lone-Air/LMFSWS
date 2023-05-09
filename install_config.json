@@ -21,8 +21,7 @@
         "library_name_prefix": "lib",
         "enable_login": "no"
     },
-
-    "install_config_loader_settings":{
+    "install_config_loader_settings": {
         "debug": false
     }
 }

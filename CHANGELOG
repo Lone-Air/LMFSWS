@@ -1,3 +1,7 @@
+--- 5/9/2023
+ -- Version 1.8.6
+  + Tool: New tool installconf-changer.py to help you make quick changes to build configuration files
+
 --- 5/8/2023
  -- Version 1.8.5
   + Feature: Better cli arguments register (support register without long flag or description)
