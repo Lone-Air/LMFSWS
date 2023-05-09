@@ -52,6 +52,7 @@ function _help(){
        -windows        Delete compiler-flag '-fPIC'
        -no-readline    Without GNU-Readline supports (default is enabled, dependence: libreadline)
        -no-optimize    Without compiler optimize
+       -no-shared      Use libLMFSWS.a instead of libLMFSWS.so while linking
        -clang          Use Clang instead of GCC
        -version        Show version of the cloned LMFSWS source
        -no-pie         Build ELF EXEC Object for LMFSWS not ELF PIE-EXEC Object
@@ -96,6 +97,8 @@ function _start(){
             LIBS=
         elif [ "$i" = "-no-optimize" ]; then
             OPT=""
+        elif [ "$i" = "-no-shared" ]; then
+            LINK_FILE="libLMFSWS.a"
         elif [ "$i" = "-clang" ]; then
             CC="clang"
         elif [ "$i" = "-no-pie" ]; then
