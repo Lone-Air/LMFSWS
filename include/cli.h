@@ -78,6 +78,18 @@ extern void UseState(LMFSWS_State*);
 
 extern double doLMFSWSCmd(const char*);
 
+/*
+ char* s=(char*)malloc(2, sizeof(char));
+ strcpy(s, "s");
+ setresult(s); // Don't free `s'
+ */
+extern void setresult(char*);
+
+/*
+ setresult_automalloc("abcdefg");
+ */
+extern void setresult_automalloc(const char*);
+
 extern int runNormallyFile(char*);
 
 extern void CloseArgPool();

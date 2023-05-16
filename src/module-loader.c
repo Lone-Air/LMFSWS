@@ -41,9 +41,9 @@ int initia_path(){
 }
 
 int add_path(const char* _p){
-    pathA=(char**)realloc(pathA, sizeof(char*)*(++pathL));
-    pathA[pathL-2]=(char*)calloc(strlen(_p)+1, sizeof(char));
-    strcpy(pathA[pathL-2], _p);
+    pathA=(char**)realloc(pathA, sizeof(char*)*(pathL+1));
+    pathA[pathL]=(char*)calloc(strlen(_p)+1, sizeof(char));
+    strcpy(pathA[pathL++], _p);
     return 0;
 }
 
@@ -180,7 +180,7 @@ extern int LoadModuleByName(const char* mod_name){
 
     closeit=dlsym(dlh, "mod_close");
     if(dlerror()!=NULL){
-        closeit=NULL;
+        closeit=NF_C;
     }
 
     Modules=(Module*)realloc(Modules, (ModuleNum+1)*sizeof(Module));
@@ -249,7 +249,7 @@ extern int ClearPath(){
     for(int i=0;i<pathL;i++){
         free(pathA[i]);
     }
-    //free(pathA);
+    free(pathA);
     free(_main_p);
     return 0;
 }

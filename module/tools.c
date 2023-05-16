@@ -53,6 +53,18 @@ double execlmfswscmd(int argc, char* argv[]){
     return status;
 }
 
+double set_result(int argc, char* argv[]){
+    char* t=(char*)calloc(1, sizeof(char));
+    for(int i=1;i<argc;i++){
+        t=(char*)realloc(t, (strlen(t)+strlen(argv[i])+1)*sizeof(char));
+        strcat(t, argv[i]);
+        if(i!=argc-1)
+          strcat(t, " ");
+    }
+    setresult(t);
+    return 0;
+}
+
 double echo(int argc, char* argv[]){
     for(int i=1;i<argc;i++){
         printf("%s%c", argv[i], i+1==argc?'\0':' ');
@@ -125,5 +137,6 @@ FuncList Regist[]={
       {"getresult", 2, NULL, (void*)getresult},
       {"exec_lastresult", 1, runrps, NULL},
       {"exec", 1, execlmfswscmd, NULL},
+      {"return", 1, set_result, NULL},
       {NULL, -1, NF, NULL}
 };

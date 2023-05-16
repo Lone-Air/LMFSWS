@@ -1,3 +1,9 @@
+--- 5/17/2023
+ -- Develop 1.9-pre1
+  + Feature: The module loader path can now be changed
+  + Feature: The user can now manually set the run through the tools module (return)
+  + Feature: An error occurs when the script file is executed. The error location (line) is displayed
+
 --- 5/10/2023
  -- Version 1.8.7
   + Feature: Module loader now supports RTLD_LAZY, RTLD_NOW, RTLD_GLOBAL and RTLD_LOCAL for dlopen (write the suffix in module mode file. e.g.: LAZY)

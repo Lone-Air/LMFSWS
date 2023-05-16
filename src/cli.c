@@ -400,7 +400,7 @@ extern double doLMFSWSCmd(const char* data){
                     }
                 }
                 else if(type==2){
-                    rpS->resultp=GetFunc(Arg.argv[0]).PtrFunc(Arg);
+                    setresult(GetFunc(Arg.argv[0]).PtrFunc(Arg));
                 }
             }
         }
@@ -410,6 +410,25 @@ extern double doLMFSWSCmd(const char* data){
         }
     }
     return result;
+}
+
+/*
+ char* s=(char*)malloc(2, sizeof(char));
+ strcpy(s, "s");
+ setresult(s); // Don't free `s'
+ */
+extern void setresult(char* s){
+    free(rpS->resultp);
+    rpS->resultp=s;
+}
+
+/*
+ setresult_automalloc("abcdefg");
+ */
+extern void setresult_automalloc(const char* s){
+    free(rpS->resultp);
+    rpS->resultp=(char*)calloc(strlen(s)+1, sizeof(char));
+    strcpy(rpS->resultp, s);
 }
 
 extern void UseState(LMFSWS_State* L){
@@ -466,26 +485,33 @@ extern int runNormallyFile(char* fp){
     unsigned int bufLen=0;
     int ch;
     int status;
+    int lines=0;
     while((ch=fgetc(_F))!=EOF){
         if(ch=='\n'){
+            lines++;
             buf[bufLen++]='\0';
             status=doLMFSWSCmd(buf);
             free(buf);
             buf=(char*)calloc(2, sizeof(char));
             bufLen=0;
-            if(status==-1) return -1;
+            if(status==-1){
+                fprintf(stderr, "Error found at %s, line %d\n", fp, lines);
+            }
             continue;
         }
         buf=(char*)realloc(buf, sizeof(char)*(bufLen+2));
         buf[bufLen++]=ch;
     }
     if(strcmp(buf, "")!=0){
+        lines++;
         buf[bufLen++]='\0';
         status=doLMFSWSCmd(buf);
         free(buf);
         buf=(char*)calloc(2, sizeof(char));
         bufLen=0;
-        if(status==-1) return -1;
+        if(status==-1){
+            fprintf(stderr, "Error found at %s, line %d\n", fp, lines);
+        }
     }
     fclose(_F);
     CloseModules();
@@ -511,6 +537,7 @@ extern void CloseArgPool(){
             free(DefaultArgPool->next);
         }
     }
+    free(ALAM);
 }
 
 extern void* get_result(){
