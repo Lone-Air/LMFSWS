@@ -30,7 +30,7 @@ ModuleList* ModL;
 double NF_C(){ return 0; }
 
 int initia_path(){
-    _main_p=(path_shell*)calloc(1, sizeof(path_shell));
+    _main_p=(path_shell*)calloc(2, sizeof(path_shell));
     pathA=(char**)calloc(2, sizeof(char*));
     pathL=2;
     pathA[0]=(char*)calloc(strlen(MODULE)+1, sizeof(char));
