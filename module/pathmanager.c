@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 int mod_init(LMFSWS_State* L){
     UseState(L);
@@ -45,22 +46,29 @@ double list_p(int argc, char* argv[]){
 static int sToi(char*);
 
 double del_p(int argc, char* argv[]){
-    for(int i=1;i<argc;i++){
-        char** new_p=(char**)calloc(1, sizeof(char*));
-        int length_p=0;
-        for(int j=0;j<pathL;j++){
-            if(j==sToi(argv[i])) continue;
-            new_p=(char**)realloc(new_p, sizeof(char*)*(length_p+1));
-            new_p[length_p]=(char*)calloc(strlen(pathA[j]), sizeof(char));
-            strcpy(new_p[length_p++], pathA[j]);
+    char** new_p=(char**)calloc(1, sizeof(char*));
+    int length_p=0;
+    bool callcontinue=false;
+    for(int j=0;j<pathL;j++){
+        for(int i=1;i<argc;i++)
+          if(j==sToi(argv[i])){
+              callcontinue=true;
+              break;
+          }
+        if(callcontinue==true){
+            callcontinue=false;
+            continue;
         }
-        for(int i=0;i<pathL;i++){
-            free(pathA[i]);
-        }
-        free(pathA);
-        pathA=new_p;
-        pathL=length_p;
+        new_p=(char**)realloc(new_p, sizeof(char*)*(length_p+1));
+        new_p[length_p]=(char*)calloc(strlen(pathA[j]), sizeof(char));
+        strcpy(new_p[length_p++], pathA[j]);
     }
+    for(int i=0;i<pathL;i++){
+        free(pathA[i]);
+    }
+    free(pathA);
+    pathA=new_p;
+    pathL=length_p;
     return 0;
 }
 

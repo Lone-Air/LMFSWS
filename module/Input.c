@@ -53,8 +53,11 @@ char* Generator(const char* part, int state){
     return NULL;
 }
 
+char* last_input;
+
 int mod_init(LMFSWS_State* L){
     UseState(L);
+    last_input=(char*)calloc(1, sizeof(char));
     rl_completion_entry_function=Generator;
     return 0;
 }
@@ -63,6 +66,11 @@ int mod_helper(){
     printf("LMFS WorkStation - Work ToolBox\n");
     printf("    prompt <prompt...>\n");
     printf("LMFSWorkStation Built-in Module.\n");
+    return 0;
+}
+
+int mod_close(){
+    free(last_input);
     return 0;
 }
 
@@ -87,7 +95,14 @@ char* input(const char* prompt){
     res[_c-1]='\0';
 #else
     res=readline(prompt);
-    if(res&&*res) add_history(res);
+    if(res&&*res){
+        if(strcmp(last_input, res)!=0){
+            add_history(res);
+            free(last_input);
+            last_input=(char*)calloc(strlen(res)+1, sizeof(char));
+            strcpy(last_input, res);
+        }
+    }
 #endif
     return res;
 }
