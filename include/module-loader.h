@@ -19,6 +19,15 @@ typedef struct ArgList{
     char** argv;
 }ArgList;
 
+typedef struct path_shell{
+    ArgList p;
+}path_shell;
+
+extern path_shell* _main_p;
+
+#define pathA _main_p->p.argv
+#define pathL _main_p->p.argc
+
 typedef double (*_Function)();
 typedef void* (*PtrFunction)();
 
@@ -47,6 +56,9 @@ extern ModuleList* ModL;
 #define Modules ModL->_m
 #define ModuleNum ModL->_mn
 
+extern int initia_path();
+extern int add_path(const char*);
+
 extern int FindModule(const char*);
 
 extern int InitModulePool();
@@ -60,6 +72,7 @@ extern int CallModuleInit(const char*);
 extern void* GetPtrFunction(const char*, const char*);
 
 extern int CloseModules();
+extern int ClearPath();
 //extern int CloseModulesPart();
 
 

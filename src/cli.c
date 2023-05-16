@@ -361,7 +361,8 @@ extern double doLMFSWSCmd(const char* data){
                     _Function helper=dlsym(Modules[index].dlheader, "mod_helper");
                     char* err=dlerror();
                     if(err!=NULL){
-                        fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s", err);
+                        //fprintf(stderr, "\033[91;1mFatal Error\033[0m: Cannot load symbol `mod_helper', Reason:\n%s", err);
+                        fprintf(stderr, "helper: <no document>\n");
                         return -1;
                     }
                     helper();
@@ -417,9 +418,11 @@ extern void UseState(LMFSWS_State* L){
     rpS=L->rps;
     FuncL=L->fla;
     ModL=L->ml;
+    _main_p=L->_mp;
 }
 
 extern int InitLMFSWS(){
+    initia_path();
     rpS=(resultpShell*)calloc(1, sizeof(resultpShell));
     L_s=(LMFSWS_State*)calloc(1, sizeof(LMFSWS_State));
     L_s->als=ALAM;
@@ -427,17 +430,28 @@ extern int InitLMFSWS(){
     L_s->rps=rpS;
     L_s->fla=FuncL;
     L_s->ml=ModL;
-    LoadModuleByName("Input");
-    if(regist("Input")==-1) return -1;
-    LoadModuleByName("cmdline");
-    if(regist("cmdline")==-1) return -1;
-    LoadModuleByName("tools");
-    if(regist("tools")==-1) return -1;
-    LoadModuleByName("register");
-    if(regist("register")==-1) return -1;
+    L_s->_mp=_main_p;
+    if(LoadModuleByName("Input")!=-1){
+        if(regist("Input")==-1) return -1;
+    }
+    else return -1;
+    if(LoadModuleByName("cmdline")!=-1){
+        if(regist("cmdline")==-1) return -1;
+    }
+    else return -1;
+    if(LoadModuleByName("tools")!=-1){
+        if(regist("tools")==-1) return -1;
+    }
+    else return -1;
+    if(LoadModuleByName("register")!=-1){
+        if(regist("register")==-1) return -1;
+    }
+    else return -1;
 #ifdef ENABLE_LOGIN
-    LoadModuleByName("login");
-    if(regist("login")==-1) return -1;
+    if(LoadModuleByName("login")!=-1){
+        if(regist("login")==-1) return -1;
+    }
+    else return -1;
 #endif
     return 0;
 }
@@ -507,6 +521,7 @@ extern void CleanMemory(){
     CloseArgPool();
     CloseModules();
     CloseFuncPool();
+    ClearPath();
 }
 
 extern void ForceQuit(int status){

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include <dlfcn.h>
 
@@ -23,9 +24,28 @@
   #include <unistd.h>
 #endif
 
+path_shell* _main_p;
 ModuleList* ModL;
 
 double NF_C(){ return 0; }
+
+int initia_path(){
+    _main_p=(path_shell*)calloc(1, sizeof(path_shell));
+    pathA=(char**)calloc(2, sizeof(char*));
+    pathL=2;
+    pathA[0]=(char*)calloc(strlen(MODULE)+1, sizeof(char));
+    strcpy(pathA[0], MODULE);
+    pathA[1]=(char*)calloc(2, sizeof(char));
+    strcpy(pathA[1], ".");
+    return 0;
+}
+
+int add_path(const char* _p){
+    pathA=(char**)realloc(pathA, sizeof(char*)*(++pathL));
+    pathA[pathL-2]=(char*)calloc(strlen(_p)+1, sizeof(char));
+    strcpy(pathA[pathL-2], _p);
+    return 0;
+}
 
 static char* load(FILE* F){
     fseek(F,0L,SEEK_END);
@@ -85,92 +105,58 @@ extern int LoadModuleByName(const char* mod_name){
     char* ER;
     int err=0;
 
-    char* name=(char*)malloc(strlen(mod_name)+1+strlen(".mode"));
-    strcpy(name, mod_name);
-    strcat(name, ".mode");
-
-    char* name_so=(char*)malloc(strlen(mod_name)+1+strlen(".so"));
-    strcpy(name_so, mod_name);
-    strcat(name_so, ".so");
-
-    char* SYSPATH=(char*)malloc(strlen(name_so)+strlen(MODULE)+1);
-    strcpy(SYSPATH, MODULE);
-    strcat(SYSPATH, name_so);
-
-    char* SYSMOD=(char*)malloc(strlen(name)+strlen(MODULE)+1);
-    strcpy(SYSMOD, MODULE);
-    strcat(SYSMOD, name);
-
-    char* cwd=calloc(2048, sizeof(char));
-    cwd=getcwd(cwd, 2048);
-
-    char* UNDERMOD=(char*)malloc(strlen(cwd)+1+strlen("/")+strlen(mod_name)+strlen(".mode"));
-    strcpy(UNDERMOD, cwd);
-    strcat(UNDERMOD, "/");
-    strcat(UNDERMOD, mod_name);
-    strcat(UNDERMOD, ".mode");
-
-    char* UNDERNAME=(char*)malloc(strlen(cwd)+1+strlen("/")+strlen(mod_name)+strlen(".so"));
-    strcpy(UNDERNAME, cwd);
-    strcat(UNDERNAME, "/");
-    strcat(UNDERNAME, mod_name);
-    strcat(UNDERNAME, ".so");
-
     char* cache={0};
+    
+    bool loaded=false;
 
-    FILE* cfg=fopen(SYSPATH, "r");
-    if(cfg==NULL){
-        cfg=fopen(UNDERNAME, "r");
-        if(cfg==NULL){
-            fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'\n", mod_name);
-            err=1;
-            goto finish;
-        }
-        cfg=fopen(UNDERMOD, "r");
-        const char* _p=UNDERNAME;
+    for(int i=0;i<pathL;i++){
+        char* _p=(char*)malloc((strlen(pathA[i])+strlen(mod_name)+2+strlen(".mode"))*sizeof(char));
+        strcpy(_p, pathA[i]);
+        strcat(_p, "/");
+        strcat(_p, mod_name);
+        char* _p_s=(char*)malloc((strlen(_p)+1+strlen(".so"))*sizeof(char));
+        strcpy(_p_s, _p);
+        strcat(_p, ".mode");
+        strcat(_p_s, ".so");
+        FILE* cfg=fopen(_p_s, "r");
         if(cfg!=NULL){
-            cache=load(cfg);
-            if(check_config(cache, "LAZY"))
-              dlh=dlopen(_p, RTLD_LAZY);
-            else if(check_config(cache, "NOW"))
-              dlh=dlopen(_p, RTLD_NOW);
-            else if(check_config(cache, "GLOBAL"))
-              dlh=dlopen(_p, RTLD_GLOBAL);
-            else if(check_config(cache, "LOCAL"))
-              dlh=dlopen(_p, RTLD_LOCAL);
-            else{
-                fprintf(stderr, "\033[91;1mFatal Error\033[0m: Invalid mode for module %s\n", mod_name);
-                err=1;
-                goto finish;
+            cfg=fopen(_p, "r");
+            if(cfg!=NULL){
+                cache=load(cfg);
+                if(check_config(cache, "LAZY"))
+                  dlh=dlopen(_p_s, RTLD_LAZY);
+                else if(check_config(cache, "NOW"))
+                  dlh=dlopen(_p_s, RTLD_NOW);
+                else if(check_config(cache, "GLOBAL"))
+                  dlh=dlopen(_p_s, RTLD_GLOBAL);
+                else if(check_config(cache, "LOCAL"))
+                  dlh=dlopen(_p_s, RTLD_LOCAL);
+                else{
+                    fprintf(stderr, "\033[91;1mFatal Error\033[0m: Invalid mode for module %s\n", mod_name);
+                    err=1;
+                    break;
+                }
+            }else{
+                dlh=dlopen(_p_s, RTLD_NOW);
             }
-        }else{
-            dlh=dlopen(_p, RTLD_NOW);
-        }
-    }else{
-        cfg=fopen(SYSMOD, "r");
-        const char* _p=SYSPATH;
-        if(cfg!=NULL){
-            cache=load(cfg);
-            if(check_config(cache, "LAZY"))
-              dlh=dlopen(_p, RTLD_LAZY);
-            else if(check_config(cache, "NOW"))
-              dlh=dlopen(_p, RTLD_NOW);
-            else if(check_config(cache, "GLOBAL"))
-              dlh=dlopen(_p, RTLD_GLOBAL);
-            else if(check_config(cache, "LOCAL"))
-              dlh=dlopen(_p, RTLD_LOCAL);
-            else{
-                fprintf(stderr, "\033[91;1mFatal Error\033[0m: Invalid mode for module %s\n", mod_name);
-                err=1;
-                goto finish;
-            }
+            loaded=true;
         }
         else{
-            dlh=dlopen(_p, RTLD_NOW);
+            free(_p_s);
+            free(_p);
+            continue;
         }
+        if(cfg!=NULL) free(cache);
+        free(_p_s);
+        free(_p);
+        break;
     }
 
-    if(cfg!=NULL) free(cache);
+    if(!loaded){
+        fprintf(stderr, "\033[91;1mFatal Error\033[0m: No module named `%s'\n", mod_name);
+        err=1;
+        goto finish;
+    }
 
     if(!dlh){
         fprintf(stderr, "\033[91;1mFatal Error\033[0m: %s\n", dlerror());
@@ -188,13 +174,13 @@ extern int LoadModuleByName(const char* mod_name){
     list=dlsym(dlh, "Regist");
     ER=dlerror();
     if(ER!=NULL){
-        fprintf(stderr, "\033[91;1mFatal Error\033[0m: CANNOT LOAD regist list, Reason:\n%s\n", ER);
+        fprintf(stderr, "\033[91;1mFatal Error\033[0m: CANNOT LOAD register table, Reason:\n%s\n", ER);
         goto finish;
     }
 
     closeit=dlsym(dlh, "mod_close");
     if(dlerror()!=NULL){
-        closeit=NF_C;
+        closeit=NULL;
     }
 
     Modules=(Module*)realloc(Modules, (ModuleNum+1)*sizeof(Module));
@@ -202,14 +188,6 @@ extern int LoadModuleByName(const char* mod_name){
     strcpy(Modules[ModuleNum++].ModuleName, mod_name);
 
 finish:
-    free(name);
-    free(name_so);
-    free(SYSPATH);
-    free(SYSMOD);
-    free(UNDERMOD);
-    free(UNDERNAME);
-    free(cwd);
-
     if(err) return -1;
 
     return 0;
@@ -265,6 +243,15 @@ extern void* GetPtrFunction(const char* name, const char* func){
         return NULL;
     }
     return _Func;
+}
+
+extern int ClearPath(){
+    for(int i=0;i<pathL;i++){
+        free(pathA[i]);
+    }
+    //free(pathA);
+    free(_main_p);
+    return 0;
 }
 
 extern int CloseModules(){

@@ -107,7 +107,10 @@ int main(int argc, char* argv[]){
         CloseModules();
         return 1;
     }
-    if(InitLMFSWS()==-1) return 1;
+    if(InitLMFSWS()==-1){
+        fprintf(stderr, "LMFSWS failed to launch\n");
+        return 1;
+    }
     PtrFunction input=GetFunc("input").PtrFunc;
     char* data;
     if(argc==1){

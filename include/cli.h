@@ -55,6 +55,7 @@ typedef struct LMFSWS_State{
     resultpShell *rps;
     FuncListArr* fla;
     ModuleList* ml;
+    path_shell* _mp;
 }LMFSWS_State;
 
 extern LMFSWS_State* L_s;
