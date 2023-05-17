@@ -1,3 +1,7 @@
+--- 5/18/2023
+ -- Develop 1.9-pre2
+  + Feature: Use loadexec in execloader the new module to load an executable file in LMFSWS for running quickly
+
 --- 5/17/2023
  -- Develop 1.9-pre1
   + Feature: The module loader path can now be changed

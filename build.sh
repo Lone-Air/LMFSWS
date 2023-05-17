@@ -213,6 +213,9 @@ function part_module(){
     ## Module loader paths manager - Required
     run ${CC} ../module/pathmanager.c $LINK_FILE ${SOFLAGS} -I.. -o modules/pathmanager.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\"
 
+    ## Executable Loader - Extra
+    run ${CC} ../module/execloader.c $LINK_FILE ${SOFLAGS} -I.. -o modules/execloader.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\" -ldl
+
     if [ x$enable_login = x"yes" ]; then
         # Security section
         run ${CP} ../extra/login.mode modules
