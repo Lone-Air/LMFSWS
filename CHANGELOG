@@ -3,6 +3,7 @@
   + Feature: The module loader path can now be changed
   + Feature: The user can now manually set the run through the tools module (return)
   + Feature: An error occurs when the script file is executed. The error location (line) is displayed
+  * Change: The shadow path is defined whether login is enabled or not
 
 --- 5/10/2023
  -- Version 1.8.7
