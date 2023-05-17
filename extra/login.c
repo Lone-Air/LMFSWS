@@ -360,6 +360,7 @@ double del_user(int argc, char* argv[]){
         }
         if(!deleted){
             fprintf(stderr, "\033[91;1mError\033[0m: uid %d isnot in shadow\n", uid);
+            return -1;
         }
         destroySha(sha);
         writeSha(new, SHADOWPATH);
