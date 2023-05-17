@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int mod_init(LMFSWS_State* L){
     UseState(L);
