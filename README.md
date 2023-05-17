@@ -15,9 +15,7 @@ $ sudo ./build.sh
 1. Required function: mod_init
 2. How to register functions to LMFSWS:
 ```
-#include <LMFSWS/command-register.h>
-#include <LMFSWS/module-loader.h>
-#include <LMFSWS/cli.h>
+#include <LMFSWS/lmfswsapi.h>
 #include <stdlib.h>
 
 int mod_init(LMFSWS_State* L){
@@ -57,9 +55,7 @@ FuncList Regist[]={
 4. In the end. Compile XXX.c to XXX.so with c compiler flag "-lLMFSWS" and put XXX.mode to the same as directory of XXX.so
    Start "LMFSWS" and
 ```
-include XXX // This is the name of your module
-regist XXX // Call Register to regist the function in Regist of XXX
-execext <Function> // The Function of XXX was loaded
+import <modules...> # Modules to be loaded
 ```
 
 ## Thanks for using!
