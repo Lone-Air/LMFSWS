@@ -14,6 +14,12 @@
 
 #include <dlfcn.h>
 
+#ifndef bool
+typedef enum bool{
+    false=0, true=1
+}bool;
+#endif
+
 typedef struct ArgList{
     int argc;
     char** argv;
