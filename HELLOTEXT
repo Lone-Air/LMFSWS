@@ -16,6 +16,9 @@ __VERSION__
 #ifdef __APPLE__
 " on darwin"
 #endif
+#if defined(__ANDROID__)
+"(android)"
+#endif
 #if defined __x86_64__
 " x86-64"
 #elif defined __i386__
