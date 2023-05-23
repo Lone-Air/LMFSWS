@@ -1,6 +1,6 @@
 {
     "manifest": {
-        "prefix": "/data/data/com.termux/files/usr",
+        "prefix": "/usr",
         "cp": "cp",
         "chmod": "chmod",
         "id": "id",
