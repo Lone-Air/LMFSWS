@@ -9,11 +9,7 @@
 #define LMFSWS_CMDREG_H
 
 #include "module-loader.h"
-
-typedef struct FuncListArr{
-    FuncList* _Func;
-    unsigned long int _FuncNum;
-}FuncListArr;
+#include "lmfstypes.h"
 
 extern FuncListArr* FuncL;
 

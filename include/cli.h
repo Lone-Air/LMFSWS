@@ -9,54 +9,8 @@
 
 #include "module-loader.h"
 #include "command-register.h"
+#include "lmfstypes.h"
 #include <stdbool.h>
-
-typedef struct Argument{
-    char flagShort;
-    char* flagFull;
-    char* desc;
-    short ArgType; // 1, 2, 3, 4, 5
-    /*
-     * 1: --xxx="a, b, c" -> xxx, {"a", "b", "c"}
-     * 2: --xxx a b c d --yyy -> xxx, {"a", "b", "c", "d"}
-     * 3: --xxx a b c --yyy -> xxx; a; b; c; yyy
-     * 4: --xxx a b c -> xxx, a; b; c (b and c will be unrecognizable)
-     * 5: Take all program parameters as arguments to this parameter
-     */
-    _Function callf; // double _f(int argc, char* argv);
-}Argument;
-
-typedef struct ArgumentsList{
-    Argument arg;
-    struct ArgumentsList* next;
-    struct ArgumentsList* last;
-}ArgumentsList;
-
-typedef struct Ala{
-    ArgumentsList* l;
-}Ala;
-
-extern Ala* ALAM;
-
-typedef struct ArgWithAl{
-    char* name;
-    ArgList arg;
-}ArgWithAl;
-
-extern char** EMPTY_LIST;
-
-typedef struct resultpShell{
-    void* resultp;
-}resultpShell;
-
-typedef struct LMFSWS_State{
-    Ala* als;
-    ArgumentsList* ale;
-    resultpShell *rps;
-    FuncListArr* fla;
-    ModuleList* ml;
-    path_shell* _mp;
-}LMFSWS_State;
 
 extern LMFSWS_State* L_s;
 extern resultpShell* rpS;
@@ -66,7 +20,7 @@ extern resultpShell* rpS;
 
 extern ArgumentsList* DefaultArgPoolHead;
 
-extern void InitArgPool();
+extern int InitArgPool();
 
 extern void RegisterArg(Argument);
 extern Argument GetArgByFullFlag(char*);

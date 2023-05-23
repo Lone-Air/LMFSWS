@@ -7,6 +7,7 @@
 #include "cli.h"
 #include "cmdline.h"
 #include "command-register.h"
+#include "variable.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -47,17 +48,21 @@ extern double help_LMFSWS(int argc, char** argv){
     return 0;
 }
 
-extern void InitArgPool(){
+extern int InitArgPool(){
     ALAM=(Ala*)calloc(1, sizeof(Ala));
+    if(ALAM==NULL) return -1;
     DefaultArgPool=(ArgumentsList*)calloc(1, sizeof(ArgumentsList));
+    if(DefaultArgPool==NULL) return -1;
     DefaultArgPoolHead=DefaultArgPool;
     DefaultArgPool->last=NULL;
     DefaultArgPool->next=(ArgumentsList*)calloc(1, sizeof(ArgumentsList));
+    if(DefaultArgPool->next==NULL) return -1;
     DefaultArgPool->arg.flagShort='h';
     DefaultArgPool->arg.flagFull="help";
     DefaultArgPool->arg.desc="Show this help";
     DefaultArgPool->arg.ArgType=5;
     DefaultArgPool->arg.callf=(_Function)help_LMFSWS;
+    return 0;
 }
 
 extern void RegisterArg(Argument Argu){
@@ -441,7 +446,14 @@ extern void UseState(LMFSWS_State* L){
 }
 
 extern int InitLMFSWS(){
-    initia_path();
+    if(InitArgPool()!=0) return -1;
+    if(InitModulePool()!=1) return -1;
+    if(InitFuncPool()!=0){
+        CloseModules();
+        return -1;
+    }
+    if(initia_path()!=0) return -1;
+    if(InitVarPool()!=0) return -1;
     rpS=(resultpShell*)calloc(1, sizeof(resultpShell));
     L_s=(LMFSWS_State*)calloc(1, sizeof(LMFSWS_State));
     L_s->als=ALAM;
@@ -450,6 +462,7 @@ extern int InitLMFSWS(){
     L_s->fla=FuncL;
     L_s->ml=ModL;
     L_s->_mp=_main_p;
+    L_s->varp=default_varpool;
     if(LoadModuleByName("Input")!=-1){
         if(regist("Input")==-1) return -1;
     }
@@ -549,6 +562,7 @@ extern void CleanMemory(){
     CloseModules();
     CloseFuncPool();
     ClearPath();
+    CleanVariables();
 }
 
 extern void ForceQuit(int status){

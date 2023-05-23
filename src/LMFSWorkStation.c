@@ -90,7 +90,10 @@ static double run(int argc, char** argv){
 }
 
 int main(int argc, char* argv[]){
-    InitArgPool();
+    if(InitLMFSWS()==-1){
+        fprintf(stderr, "LMFSWS failed to launch\n");
+        return 1;
+    }
     RegisterArg((Argument){'\0', "run", "Run file --run=file1,file2", 1, run});
     RegisterArg((Argument){'\0', "runfiles", "Run file --runfiles file1 file2", 2, run});
     RegisterArg((Argument){'\0', "version", "Get version of LMFSWorkStation", 3, _get_version});
@@ -101,15 +104,6 @@ int main(int argc, char* argv[]){
 #include "HELLOTEXT"
                 "\n"
                 );
-    }
-    if(InitModulePool()!=1) return 1;
-    if(InitFuncPool()!=0){
-        CloseModules();
-        return 1;
-    }
-    if(InitLMFSWS()==-1){
-        fprintf(stderr, "LMFSWS failed to launch\n");
-        return 1;
     }
     PtrFunction input=GetFunc("input").PtrFunc;
     char* data;

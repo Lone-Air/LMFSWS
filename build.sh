@@ -167,8 +167,8 @@ function part_main(){
     runNoEXIT mkdir build
     run ${CP} LICENSE build
     run cd src
-    ALLFILES="command-register.o module-loader.o cli.o"
-    ALLCFILES="command-register.c module-loader.c cli.c"
+    ALLFILES="command-register.o module-loader.o cli.o variable.o"
+    ALLCFILES="command-register.c module-loader.c cli.c variable.c"
     run cd ..
     run cd build
 
@@ -245,6 +245,7 @@ function part_install(){
     run ${CP} -rf LICENSE "$PREFIX"/share/licenses/LMFSWS
 
     runNoEXIT mkdir -p "$PREFIX"/include/LMFSWS
+    run ${CP} -rf ../VERSION "$PREFIX"/include/LMFSWS
     run ${CP} -rf ../include/* "$PREFIX"/include/LMFSWS
 }
 
