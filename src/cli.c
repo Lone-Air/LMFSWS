@@ -479,6 +479,10 @@ extern int InitLMFSWS(){
         if(regist("register")==-1) return -1;
     }
     else return -1;
+    if(LoadModuleByName("var")!=-1){
+        if(regist("var")==-1) return -1;
+    }
+    else return -1;
 #ifdef ENABLE_LOGIN
     if(LoadModuleByName("login")!=-1){
         if(regist("login")==-1) return -1;

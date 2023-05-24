@@ -19,9 +19,8 @@ int InitVarPool(){
     vlen=0;
     vpool=(var_struct*)malloc(sizeof(var_struct)*1);
     if(vpool==NULL) return -1;
-    char* version_lmfsws=(char*)malloc(sizeof(char)*(strlen(
-#include "VERSION"
-                                                           )));
+    char* version_lmfsws=(char*)malloc(sizeof(char)*(strlen(VERSION)));
+    strcpy(version_lmfsws, VERSION);
     newVar("VERSION", VAR_STR, (var_data){
            version_lmfsws
            });

@@ -175,12 +175,12 @@ function part_main(){
     # MAIN
     tell "for i in $ALLCFILES
 do
-    ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/"'$i'" -o "'$i'".o -c -DPREFIX=\"$PREFIX\"
+    ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/"'$i'" -o "'$i'".o -c -DPREFIX=\"$PREFIX\" -DVERSION=$(cat ../VERSION)
 done"
 
     for i in $ALLCFILES
     do
-        run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c -DPREFIX=\"$PREFIX\"
+        run ${CC} $CFLAGS $EXTRA_CFLAGS -I.. ../src/$i -o $i.o -c -DPREFIX=\"$PREFIX\" -DVERSION=$(cat ../VERSION)
     done
 
     run ${CC} $EXTRA_CFLAGS $LDFLAGS *.o $SOFLAGS -o libLMFSWS"$DLNAME" -Wno-unused-command-line-argument
@@ -212,6 +212,9 @@ function part_module(){
 
     ## Module loader paths manager - Required
     run ${CC} ../module/pathmanager.c $LINK_FILE ${SOFLAGS} -I.. -o modules/pathmanager.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\"
+
+    ## Variable controller - Required
+    run ${CC} ../module/var.c $LINK_FILE ${SOFLAGS} -I.. -o modules/var.so $CFLAGS $MODULE_EXTRA_FLAGS $EXTRA_CFLAGS ${RUNTIME} -DPREFIX=\"$PREFIX\"
 
     if [ x$enable_login = x"yes" ]; then
         # Security section

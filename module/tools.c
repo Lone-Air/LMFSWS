@@ -1,5 +1,5 @@
 /*
- * LMFS WorkStation - MODULE - TEXT PRINTER
+ * LMFS WorkStation - MODULE - TOOLS
  *
  * Builtin
  *
