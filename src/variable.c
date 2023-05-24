@@ -15,11 +15,11 @@ ArgList emptylist;
 int InitVarPool(){
     emptylist.argc=0;
     emptylist.argv=NULL;
-    default_varpool=(varpool*)malloc(sizeof(varpool));
+    default_varpool=(varpool*)calloc(1, sizeof(varpool));
     vlen=0;
-    vpool=(var_struct*)malloc(sizeof(var_struct)*1);
+    vpool=(var_struct*)calloc(1, sizeof(var_struct));
     if(vpool==NULL) return -1;
-    char* version_lmfsws=(char*)malloc(sizeof(char)*(strlen(VERSION)));
+    char* version_lmfsws=(char*)malloc(sizeof(char)*(strlen(VERSION)+1));
     strcpy(version_lmfsws, VERSION);
     newVar("VERSION", VAR_STR, (var_data){
            version_lmfsws
@@ -63,8 +63,8 @@ int update_var(char* name, var_type type, var_data data){
 int delete_var(char* name){
     int id=search_var(name);
     if(id==-1) return -1;
-    varpool* new_vpool=(varpool*)malloc(sizeof(varpool));
-    new_vpool->var_pool=(var_struct*)malloc(sizeof(var_struct));
+    varpool* new_vpool=(varpool*)calloc(1, sizeof(varpool));
+    new_vpool->var_pool=(var_struct*)calloc(1, sizeof(var_struct));
     int new_vlen=0;
     for(int i=0; i<vlen; i++){
         if(i==id){

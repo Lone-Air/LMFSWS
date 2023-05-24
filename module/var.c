@@ -43,14 +43,14 @@ double create(int argc, char* argv[]){
     if(search_var(argv[2])!=-1)
       return 0;
     if(strcmp(argv[1], "str")==0)
-      newVar(copystr(argv[2]), VAR_STR, (var_data){copystr("")});
+      newVar(argv[2], VAR_STR, (var_data){copystr("")});
     else if(strcmp(argv[1], "list")==0){
-        char** argv=(char**)malloc(1*sizeof(char*));
+        char** arg=(char**)calloc(1, sizeof(char*));
         var_data data;
         data.listData.argc=0;
-        data.listData.argv=argv;
+        data.listData.argv=arg;
         data.strData=NULL;
-        newVar(copystr(argv[2]), VAR_LIST, data);
+        newVar(argv[2], VAR_LIST, data);
     }
     else{
         fprintf(stderr, "\033[91;1m:%s: invalid type\033[0m\n", argv[0]);

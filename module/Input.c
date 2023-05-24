@@ -32,19 +32,19 @@ char* first_x_data(char* _s, int x){
 }
 
 char* Generator(const char* part, int state){
-    char* ptr;
+    char* ptr_str;
     char* result;
     char* temp;
     int ok=0;
     for(int i=0;i<FuncNum;i++){
-        ptr=Func[i].name;
-        temp=first_x_data(ptr, strlen(part));
+        ptr_str=Func[i].name;
+        temp=first_x_data(ptr_str, strlen(part));
         if(strcmp(temp, part)==0 || strcmp(part, "")==0){
             if(state>ok)
               ok++;
             else{
-                result=(char*)calloc(strlen(ptr)+1, sizeof(char));
-                strcpy(result, ptr);
+                result=(char*)calloc(strlen(ptr_str)+1, sizeof(char));
+                strcpy(result, ptr_str);
                 return result;
             }
         }
