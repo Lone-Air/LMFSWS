@@ -11,7 +11,7 @@
         "optimize": "-O3",
         "dependences": "-DHAVE_READLINE -lreadline",
         "ldflags": "-pie -fPIE -ldl",
-        "soflags": "-shared -ldl",
+        "soflags": "-L.. -L. -shared -ldl",
         "module_extra_flags": "",
         "shared_lib": "libLMFSWS.so",
         "requires": "-lLMFSWS",
